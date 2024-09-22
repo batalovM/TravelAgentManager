@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Управление Туристическим Агентством</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <meta charset="UTF-8">
+    <script src="/scripts.js" defer></script>
+</head>
+<body>
+<h1>Управление Туристическим Агентством</h1>
+
+<!-- Форма для добавления нового клиента -->
+<h2>Добавить Клиента</h2>
+<form th:action="@{/addClient}" th:object="${newClient}" method="post" class="form-group">
+    <div class="form-left">
+        <div class="input-group">
+            <label for="fullName">ФИО:</label>
+            <input type="text" id="fullName" required/>
+        </div>
+        <div class="input-group">
+            <label for="dateOfBirth">Дата Рождения:</label>
+            <input type="date" id="dateOfBirth" required/>
+        </div>
+        <div class="input-group">
+            <label for="passportSeries">Серия Паспорта:</label>
+            <input type="text" id="passportSeries" required/>
+        </div>
+        <div class="input-group">
+            <label for="passportNumber">Номер Паспорта:</label>
+            <input type="text" id="passportNumber" required/>
+        </div>
+        <button type="submit">Добавить Клиента</button>
+    </div>
+
+    <div class="form-right">
+        <label for="photoInput">Выберите Фото:</label>
+        <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(event)"/>
+        <img id="photoPreview" src="" alt="Фото" style="display:none;"/>
+    </div>
+</form>
+
+<!-- Список клиентов -->
+<h2>Клиенты</h2>
+<table id="clientsTable">
+    <thead>
+    <tr>
+        <th>ID Клиента</th>
+        <th>ФИО</th>
+        <th>Дата Рождения</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="client : ${clients}">
+        <td th:text="${client.clientID}"></td>
+        <td th:text="${client.fullName}"></td>
+        <td th:text="${client.dateOfBirth}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Форма для добавления нового маршрута -->
+<h2>Добавить Маршрут</h2>
+<form id="addRouteForm" th:action="@{/addRoute}" th:object="${newRoute}" method="post">
+    <label for="routeName">Название Маршрута:</label>
+    <input type="text" id="routeName" required/>
+
+    <label for="country">Страна:</label>
+    <input type="text" id="country" required/>
+
+    <label for="duration">Продолжительность (дней):</label>
+    <input type="number" id="duration" required/>
+
+    <button type="submit">Добавить Маршрут</button>
+</form>
+
+<!-- Список маршрутов -->
+<h2>Маршруты</h2>
+<table id="routesTable">
+    <thead>
+    <tr>
+        <th>ID Маршрута</th>
+        <th>Название Маршрута</th>
+        <th>Страна</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="route : ${routes}">
+        <td th:text="${route.routeID}"></td>
+        <td th:text="${route.routeName}"></td>
+        <td th:text="${route.country}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Форма для добавления новой поездки -->
+<h2>Добавить Поездку</h2>
+<form id="addTripForm" th:action="@{/addTrip}" th:object="${newTrip}" method="post">
+    <label for="routeID">ID Маршрута:</label>
+    <input type="number" id="routeID" required/>
+
+    <label for="companyRepresentative">Представитель Компании:</label>
+    <input type="text" id="companyRepresentative" required/>
+
+    <label for="tripCost">Стоимость Поездки:</label>
+    <input type="number" id="tripCost" required/>
+
+    <button type="submit">Добавить Поездку</button>
+</form>
+
+<!-- Список поездок -->
+<h2>Поездки</h2>
+<table id="tripsTable">
+    <thead>
+    <tr>
+        <th>ID Поездки</th>
+        <th>ID Маршрута</th>
+        <th>Представитель Компании</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="trip : ${trips}">
+        <td th:text="${trip.tripID}"></td>
+        <td th:text="${trip.routeID}"></td>
+        <td th:text="${trip.companyRepresentative}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

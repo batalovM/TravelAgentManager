@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+h2 {
+    color: #555;
+    margin-top: 30px;
+}
+
+.form-group {
+    display: flex; /* Используем flexbox для двух колонок */
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.form-left {
+    flex: 1; /* Левая колонка занимает 1 часть */
+    margin-right: 20px; /* Отступ между колонками */
+}
+
+.form-right {
+    flex: 0 0 150px; /* Правая колонка фиксированной ширины */
+}
+
+.input-group {
+    margin-bottom: 10px; /* Отступ между полями */
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+    width: 100%; /* Ширина поля на 100% от родительского элемента */
+    padding: 5px; /* Уменьшаем отступы */
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px; /* Отступ сверху */
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.photo-preview-container {
+    margin-top: 10px; /* Отступ сверху для области фотографии */
+}
+
+#photoPreview {
+    width: 150px; /* Фиксированная ширина */
+    height: 200px; /* Фиксированная высота */
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none; /* Скрываем по умолчанию */
+}
