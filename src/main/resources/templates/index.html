@@ -14,21 +14,32 @@
 <form th:action="@{/addClient}" th:object="${newClient}" method="post" class="form-group">
     <div class="form-left">
         <div class="input-group">
-            <label for="fullName">ФИО:</label>
-            <input type="text" id="fullName" required/>
+            <label for="lastName">Фамилия:</label>
+            <input type="text" id="lastName" name="lastName" required/>
+        </div>
+        <div class="input-group">
+            <label for="firstName">Имя:</label>
+            <input type="text" id="firstName" name="firstName" required/>
+        </div>
+        <div class="input-group">
+            <label for="surName">Отчество:</label>
+            <input type="text" id="surName" name="surName" required/>
         </div>
         <div class="input-group">
             <label for="dateOfBirth">Дата Рождения:</label>
-            <input type="date" id="dateOfBirth" required/>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" required/>
         </div>
         <div class="input-group">
             <label for="passportSeries">Серия Паспорта:</label>
-            <input type="text" id="passportSeries" required/>
+            <input type="text" id="passportSeries" name="passportSeries" required/>
         </div>
         <div class="input-group">
             <label for="passportNumber">Номер Паспорта:</label>
-            <input type="text" id="passportNumber" required/>
+            <input type="text" id="passportNumber" name="passportNumber" required/>
         </div>
+        <!-- Скрытое поле для хранения имени файла -->
+        <input type="hidden" id="photo" name="photo"/>
+
         <button type="submit">Добавить Клиента</button>
     </div>
 
@@ -44,15 +55,17 @@
 <table id="clientsTable">
     <thead>
     <tr>
-        <th>ID Клиента</th>
-        <th>ФИО</th>
+        <th>Фамилия</th>
+        <th>Имя</th>
+        <th>Отчество</th>
         <th>Дата Рождения</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="client : ${clients}">
-        <td th:text="${client.clientID}"></td>
-        <td th:text="${client.fullName}"></td>
+        <td th:text="${client.getLastName()}"></td>
+        <td th:text="${client.getFirstName()}"></td>
+        <td th:text="${client.getSurName()}"></td>
         <td th:text="${client.dateOfBirth}"></td>
     </tr>
     </tbody>

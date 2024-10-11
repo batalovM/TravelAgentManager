@@ -9,6 +9,8 @@ function previewPhoto(event) {
             photoPreview.style.display = 'block'; // Показываем изображение
         }
         reader.readAsDataURL(file);
+        // Дополняем: сохраняем имя файла в скрытое поле
+        document.getElementById('photo').value = file.name;
     } else {
         photoPreview.src = '';
         photoPreview.style.display = 'none'; // Скрываем изображение
