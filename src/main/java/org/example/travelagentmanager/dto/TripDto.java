@@ -5,4 +5,5 @@ package org.example.travelagentmanager.dto;
  * @Date 10.10.2024
  */
 public class TripDto {
+
 }
