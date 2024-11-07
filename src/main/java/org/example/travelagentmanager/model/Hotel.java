@@ -16,5 +16,5 @@ import lombok.Setter;
 public class Hotel {
     private int id;
     private String hotelName;
-    private String hotelClass;
+    private int hotelClass;
 }

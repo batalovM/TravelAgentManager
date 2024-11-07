@@ -1,7 +1,7 @@
 package org.example.travelagentmanager.repository;
 
 import org.example.travelagentmanager.model.Employee;
-import org.example.travelagentmanager.repository.interfaces.EmployeeRep;
+import org.example.travelagentmanager.interfaces.EmployeeRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<html lang="ru">
 <head>
     <title>Управление Туристическим Агентством</title>
     <link rel="stylesheet" type="text/css" href="/styles.css">
@@ -9,7 +9,178 @@
 <body>
 <h1>Управление Туристическим Агентством</h1>
 
-<!-- Форма для добавления нового клиента -->
+<!-- Список клиентов -->
+<h2>Клиенты</h2>
+<table id="clientsTable">
+    <thead>
+    <tr>
+        <th>Фамилия</th>
+        <th>Имя</th>
+        <th>Отчество</th>
+        <th>Дата Рождения</th>
+        <th>Фотография</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Иванов</td>
+        <td>Иван</td>
+        <td>Иванович</td>
+        <td>01.01.1980</td>
+        <td>
+            <button onclick="showPhoto('photo1')">Показать Фото</button>
+            <img id="photo1" src="/default-placeholder.png" alt="Фото Клиента" style="display: none; width: 100px; height: auto; margin-top: 10px;">
+        </td>
+    </tr>
+    <tr>
+        <td>Петров</td>
+        <td>Петр</td>
+        <td>Петрович</td>
+        <td>12.12.1985</td>
+        <td>
+            <button onclick="showPhoto('photo2')">Показать Фото</button>
+            <img id="photo2" src="/photo_2024-10-01_16-56-09.jpg" alt="Фото Клиента" style="display: none; width: 100px; height: auto; margin-top: 10px;">
+        </td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="openModal('clientModal')">Добавить Клиента</button>
+
+<!-- Модальное окно для добавления клиента -->
+<div id="clientModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('clientModal')">&times;</span>
+        <h2>Добавить Клиента</h2>
+        <form th:action="@{/addClient}" method="post">
+            <label for="lastName">Фамилия:</label>
+            <input type="text" id="lastName" name="lastName" required>
+            <label for="firstName">Имя:</label>
+            <input type="text" id="firstName" name="firstName" required>
+            <label for="surName">Отчество:</label>
+            <input type="text" id="surName" name="surName" required>
+            <label for="dateOfBirth">Дата Рождения:</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+</div>
+
+<!-- Аналогичные секции для маршрутов и поездок -->
+
+<h2>Маршруты</h2>
+<table id="routesTable">
+    <thead>
+    <tr>
+        <th>ID Маршрута</th>
+        <th>Название Маршрута</th>
+        <th>Страна</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1</td>
+        <td>Золотое Кольцо</td>
+        <td>Россия</td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="openModal('routeModal')">Добавить Маршрут</button>
+
+<div id="routeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('routeModal')">&times;</span>
+        <h2>Добавить Маршрут</h2>
+        <form th:action="@{/addRoute}" method="post">
+            <label for="routeName">Название:</label>
+            <input type="text" id="routeName" name="routeName" required>
+            <label for="country">Страна:</label>
+            <input type="text" id="country" name="country" required>
+            <label for="duration">Продолжительность (дней):</label>
+            <input type="number" id="duration" name="duration" required>
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+</div>
+<!-- Список поездок -->
+<h2>Поездки</h2>
+<table id="tripsTable">
+    <thead>
+    <tr>
+        <th>ID Поездки</th>
+        <th>ID Маршрута</th>
+        <th>Представитель Компании</th>
+        <th>Стоимость Поездки</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>101</td>
+        <td>1</td>
+        <td>ООО "Турист"</td>
+        <td>50 000 ₽</td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="openModal('tripModal')">Добавить Поездку</button>
+
+<!-- Модальное окно для добавления поездки -->
+<div id="tripModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('tripModal')">&times;</span>
+        <h2>Добавить Поездку</h2>
+        <form th:action="@{/addTrip}" method="post">
+            <label for="routeID">ID Маршрута:</label>
+            <input type="number" id="routeID" name="routeID" required>
+            <label for="companyRepresentative">Представитель Компании:</label>
+            <input type="text" id="companyRepresentative" name="companyRepresentative" required>
+            <label for="tripCost">Стоимость Поездки:</label>
+            <input type="number" id="tripCost" name="tripCost" required>
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Управление Туристическим Агентством</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <meta charset="UTF-8">
+    <script src="/scripts.js" defer></script>
+</head>
+<body>
+<h1>Управление Туристическим Агентством</h1>
+ Форма для добавления нового клиента
 <h2>Добавить Клиента</h2>
 <form th:action="@{/addClient}" th:object="${newClient}" method="post" class="form-group">
     <div class="form-left">
@@ -37,7 +208,7 @@
             <label for="passportNumber">Номер Паспорта:</label>
             <input type="text" id="passportNumber" name="passportNumber" required/>
         </div>
-        <!-- Скрытое поле для хранения имени файла -->
+         Скрытое поле для хранения имени файла
         <input type="hidden" id="photo" name="photo"/>
 
         <button type="submit">Добавить Клиента</button>
@@ -50,7 +221,7 @@
     </div>
 </form>
 
-<!-- Список клиентов -->
+ Список клиентов
 <h2>Клиенты</h2>
 <table id="clientsTable">
     <thead>
@@ -71,7 +242,7 @@
     </tbody>
 </table>
 
-<!-- Форма для добавления нового маршрута -->
+ Форма для добавления нового маршрута
 <h2>Добавить Маршрут</h2>
 <form id="addRouteForm" th:action="@{/addRoute}" th:object="${newRoute}" method="post">
     <label for="routeName">Название Маршрута:</label>
@@ -86,7 +257,7 @@
     <button type="submit">Добавить Маршрут</button>
 </form>
 
-<!-- Список маршрутов -->
+ Список маршрутов
 <h2>Маршруты</h2>
 <table id="routesTable">
     <thead>
@@ -105,7 +276,7 @@
     </tbody>
 </table>
 
-<!-- Форма для добавления новой поездки -->
+ Форма для добавления новой поездки
 <h2>Добавить Поездку</h2>
 <form id="addTripForm" th:action="@{/addTrip}" th:object="${newTrip}" method="post">
     <label for="routeID">ID Маршрута:</label>
@@ -120,7 +291,7 @@
     <button type="submit">Добавить Поездку</button>
 </form>
 
-<!-- Список поездок -->
+ Список поездок
 <h2>Поездки</h2>
 <table id="tripsTable">
     <thead>
@@ -141,3 +312,4 @@
 
 </body>
 </html>
+-->

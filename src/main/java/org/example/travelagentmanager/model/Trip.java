@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author batal
@@ -20,7 +21,7 @@ public class Trip {
     private BigDecimal tripCost;
     private int employeeId;
     private int routesId;
-    private String departureTime;
+    private Date departureTime;
     private String arrivalTime;
     private int touristCount;
     private BigDecimal penaltySize;

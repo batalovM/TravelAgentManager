@@ -1,4 +1,4 @@
-package org.example.travelagentmanager.model;
+package org.example.travelagentmanager.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

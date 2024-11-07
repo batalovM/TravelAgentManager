@@ -1,7 +1,7 @@
 package org.example.travelagentmanager.repository;
 
 import org.example.travelagentmanager.model.Client;
-import org.example.travelagentmanager.repository.interfaces.ClientRep;
+import org.example.travelagentmanager.interfaces.ClientRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

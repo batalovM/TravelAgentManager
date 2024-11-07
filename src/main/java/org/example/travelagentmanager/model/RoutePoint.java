@@ -15,6 +15,9 @@ import lombok.Setter;
 @Getter
 public class RoutePoint {
     private int id;
-    private int routeId;
-    private int routePointsId;
+    private int excursionProgramId;
+    private int cityId;
+    private int hotelId;
+    private String routeName;
+    private int durationAtPoint;
 }

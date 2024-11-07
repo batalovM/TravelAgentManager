@@ -1,4 +1,4 @@
-package org.example.travelagentmanager.repository.interfaces;
+package org.example.travelagentmanager.interfaces;
 
 import org.example.travelagentmanager.model.City;
 import org.example.travelagentmanager.model.Client;
