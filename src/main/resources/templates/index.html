@@ -4,312 +4,188 @@
     <title>Управление Туристическим Агентством</title>
     <link rel="stylesheet" type="text/css" href="/styles.css">
     <meta charset="UTF-8">
-    <script src="/scripts.js" defer></script>
+    <script type="module" src="ClientApi/main.js" defer></script>
+    <script type="module" src="RoutesApi/main.js" defer></script>
+
 </head>
 <body>
 <h1>Управление Туристическим Агентством</h1>
 
 <!-- Список клиентов -->
 <h2>Клиенты</h2>
-<table id="clientsTable">
+<table>
     <thead>
     <tr>
+        <th>id</th>
         <th>Фамилия</th>
         <th>Имя</th>
         <th>Отчество</th>
         <th>Дата Рождения</th>
+        <th>Серия паспорта</th>
+        <th>Номер паспорта</th>
+        <th>Дата выдачи</th>
+        <th>Кем выдан</th>
         <th>Фотография</th>
     </tr>
     </thead>
+</table>
+<div id="loadingSpinnerForClients" style="display:none;">Загрузка...</div>
+
+<table id="clientsTable">
     <tbody>
-    <tr>
-        <td>Иванов</td>
-        <td>Иван</td>
-        <td>Иванович</td>
-        <td>01.01.1980</td>
-        <td>
-            <button onclick="showPhoto('photo1')">Показать Фото</button>
-            <img id="photo1" src="/default-placeholder.png" alt="Фото Клиента" style="display: none; width: 100px; height: auto; margin-top: 10px;">
-        </td>
-    </tr>
-    <tr>
-        <td>Петров</td>
-        <td>Петр</td>
-        <td>Петрович</td>
-        <td>12.12.1985</td>
-        <td>
-            <button onclick="showPhoto('photo2')">Показать Фото</button>
-            <img id="photo2" src="/photo_2024-10-01_16-56-09.jpg" alt="Фото Клиента" style="display: none; width: 100px; height: auto; margin-top: 10px;">
-        </td>
-    </tr>
+
     </tbody>
 </table>
-<button onclick="openModal('clientModal')">Добавить Клиента</button>
+
+<div class="button-container">
+    <button onclick="openModal('clientModal')">Добавить Клиента</button>
+    <button onclick="openModal('clientUpdateModal')">Обновить Клиента</button>
+    <button onclick="openModal('deleteModal')">Удалить Клиента</button>
+</div>
 
 <!-- Модальное окно для добавления клиента -->
 <div id="clientModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('clientModal')">&times;</span>
         <h2>Добавить Клиента</h2>
-        <form th:action="@{/addClient}" method="post">
-            <label for="lastName">Фамилия:</label>
-            <input type="text" id="lastName" name="lastName" required>
-            <label for="firstName">Имя:</label>
-            <input type="text" id="firstName" name="firstName" required>
-            <label for="surName">Отчество:</label>
-            <input type="text" id="surName" name="surName" required>
+        <form id="addClientForm">
+            <label for="lastname">Фамилия:</label>
+            <input type="text" id="lastname" name="lastname" required>
+
+            <label for="firstname">Имя:</label>
+            <input type="text" id="firstname" name="firstname" required>
+
+            <label for="surname">Отчество:</label>
+            <input type="text" id="surname" name="surname" required>
+
             <label for="dateOfBirth">Дата Рождения:</label>
             <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+
+            <label for="passportSeries">Серия паспорта:</label>
+            <input type="text" id="passportSeries" name="passportSeries" required>
+
+            <label for="passportNumber">Номер паспорта:</label>
+            <input type="text" id="passportNumber" name="passportNumber" required>
+
+            <label for="dateOfIssue">Дата выдачи:</label>
+            <input type="date" id="dateOfIssue" name="dateOfIssue" required>
+
+            <label for="issueBy">Кем выдан:</label>
+            <input type="text" id="issueBy" name="issueBy" required>
+
+            <label for="photo">Фотография:</label>
+            <input type="text" id="photo" name="photo" required>
+
             <button type="submit">Добавить</button>
         </form>
     </div>
 </div>
 
-<!-- Аналогичные секции для маршрутов и поездок -->
+<!-- Модальное окно для обновления клиента -->
+<div id="clientUpdateModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('clientUpdateModal')">&times;</span>
+        <h2>Обновить Клиента</h2>
+        <form id="updateClientForm">
+            <label for="updateId">Введите ID клиента для поиска:</label>
+            <input type="text" id="updateId" name="id" required>
+            <button type="submit">Поиск</button>
+        </form>
+        <form id="updateForm" style="display: none;">
+            <label for="lastname1">Фамилия:</label>
+            <input type="text" id="lastname1" name="lastname" required>
+
+            <label for="firstname1">Имя:</label>
+            <input type="text" id="firstname1" name="firstname" required>
+
+            <label for="surname1">Отчество:</label>
+            <input type="text" id="surname1" name="surname" required>
+
+            <label for="dateOfBirth1">Дата Рождения:</label>
+            <input type="date" id="dateOfBirth1" name="dateOfBirth" required>
+
+            <label for="passportSeries1">Серия паспорта:</label>
+            <input type="text" id="passportSeries1" name="passportSeries" required>
+
+            <label for="passportNumber1">Номер паспорта:</label>
+            <input type="text" id="passportNumber1" name="passportNumber" required>
+
+            <label for="dateOfIssue1">Дата выдачи:</label>
+            <input type="date" id="dateOfIssue1" name="dateOfIssue" required>
+
+            <label for="issueBy1">Кем выдан:</label>
+            <input type="text" id="issueBy1" name="issueBy" required>
+
+            <label for="photo1">Фотография:</label>
+            <input type="text" id="photo1" name="photo" required>
+
+            <button type="submit">Обновить</button>
+        </form>
+    </div>
+</div>
+
+<!-- Модальное окно для удаления клиента -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+        <h2>Удалить Клиента</h2>
+        <form id="deleteClientForm">
+            <label for="updateId">Введите ID клиента для удаления:</label>
+            <input type="text" id="deleteId" name="id" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</div>
+
+<!-- Пагинация -->
+<div id="paginationControls">
+    <button onclick="prevPage()">Назад</button>
+    <span id="pageNumber">1</span>
+    <button onclick="nextPage()">Вперед</button>
+</div>
 
 <h2>Маршруты</h2>
-<table id="routesTable">
+<table>
     <thead>
     <tr>
-        <th>ID Маршрута</th>
-        <th>Название Маршрута</th>
-        <th>Страна</th>
+        <th>id</th>
+        <th>id_Страны</th>
+        <th>Название маршрута</th>
+        <th>Длительность маршрута(в сутках)</th>
     </tr>
     </thead>
+</table>
+<div id="loadingSpinnerForRoutes" style="display:none;">Загрузка...</div>
+<table id="routesTable">
     <tbody>
-    <tr>
-        <td>1</td>
-        <td>Золотое Кольцо</td>
-        <td>Россия</td>
-    </tr>
+
     </tbody>
 </table>
-<button onclick="openModal('routeModal')">Добавить Маршрут</button>
-
+<div class="button-container">
+    <button onclick="openModal('routeModal')">Добавить Маршрут</button>
+    <button onclick="openModal('routeUpdateModal')">Обновить Маршрут</button>
+    <button onclick="openModal('routeDeleteModal')">Удалить Маршрут</button>
+</div>
+<!-- Модальное окно для добавления маршрута -->
 <div id="routeModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('routeModal')">&times;</span>
-        <h2>Добавить Маршрут</h2>
-        <form th:action="@{/addRoute}" method="post">
-            <label for="routeName">Название:</label>
-            <input type="text" id="routeName" name="routeName" required>
-            <label for="country">Страна:</label>
-            <input type="text" id="country" name="country" required>
-            <label for="duration">Продолжительность (дней):</label>
-            <input type="number" id="duration" name="duration" required>
+        <h2>Добавить Клиента</h2>
+        <form id="addRouteForm">
             <button type="submit">Добавить</button>
         </form>
     </div>
 </div>
-<!-- Список поездок -->
-<h2>Поездки</h2>
-<table id="tripsTable">
-    <thead>
-    <tr>
-        <th>ID Поездки</th>
-        <th>ID Маршрута</th>
-        <th>Представитель Компании</th>
-        <th>Стоимость Поездки</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>101</td>
-        <td>1</td>
-        <td>ООО "Турист"</td>
-        <td>50 000 ₽</td>
-    </tr>
-    </tbody>
-</table>
-<button onclick="openModal('tripModal')">Добавить Поездку</button>
 
-<!-- Модальное окно для добавления поездки -->
-<div id="tripModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('tripModal')">&times;</span>
-        <h2>Добавить Поездку</h2>
-        <form th:action="@{/addTrip}" method="post">
-            <label for="routeID">ID Маршрута:</label>
-            <input type="number" id="routeID" name="routeID" required>
-            <label for="companyRepresentative">Представитель Компании:</label>
-            <input type="text" id="companyRepresentative" name="companyRepresentative" required>
-            <label for="tripCost">Стоимость Поездки:</label>
-            <input type="number" id="tripCost" name="tripCost" required>
-            <button type="submit">Добавить</button>
-        </form>
-    </div>
+
+
+<!-- Пагинация -->
+<div id="routePaginationControls">
+    <button onclick="prevPage()">Назад</button>
+    <span id="routePageNumber">1</span>
+    <button onclick="nextPage()">Вперед</button>
 </div>
-</body>
-</html>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head>
-    <title>Управление Туристическим Агентством</title>
-    <link rel="stylesheet" type="text/css" href="/styles.css">
-    <meta charset="UTF-8">
-    <script src="/scripts.js" defer></script>
-</head>
-<body>
-<h1>Управление Туристическим Агентством</h1>
- Форма для добавления нового клиента
-<h2>Добавить Клиента</h2>
-<form th:action="@{/addClient}" th:object="${newClient}" method="post" class="form-group">
-    <div class="form-left">
-        <div class="input-group">
-            <label for="lastName">Фамилия:</label>
-            <input type="text" id="lastName" name="lastName" required/>
-        </div>
-        <div class="input-group">
-            <label for="firstName">Имя:</label>
-            <input type="text" id="firstName" name="firstName" required/>
-        </div>
-        <div class="input-group">
-            <label for="surName">Отчество:</label>
-            <input type="text" id="surName" name="surName" required/>
-        </div>
-        <div class="input-group">
-            <label for="dateOfBirth">Дата Рождения:</label>
-            <input type="date" id="dateOfBirth" name="dateOfBirth" required/>
-        </div>
-        <div class="input-group">
-            <label for="passportSeries">Серия Паспорта:</label>
-            <input type="text" id="passportSeries" name="passportSeries" required/>
-        </div>
-        <div class="input-group">
-            <label for="passportNumber">Номер Паспорта:</label>
-            <input type="text" id="passportNumber" name="passportNumber" required/>
-        </div>
-         Скрытое поле для хранения имени файла
-        <input type="hidden" id="photo" name="photo"/>
-
-        <button type="submit">Добавить Клиента</button>
-    </div>
-
-    <div class="form-right">
-        <label for="photoInput">Выберите Фото:</label>
-        <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(event)"/>
-        <img id="photoPreview" src="" alt="Фото" style="display:none;"/>
-    </div>
-</form>
-
- Список клиентов
-<h2>Клиенты</h2>
-<table id="clientsTable">
-    <thead>
-    <tr>
-        <th>Фамилия</th>
-        <th>Имя</th>
-        <th>Отчество</th>
-        <th>Дата Рождения</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="client : ${clients}">
-        <td th:text="${client.getLastName()}"></td>
-        <td th:text="${client.getFirstName()}"></td>
-        <td th:text="${client.getSurName()}"></td>
-        <td th:text="${client.dateOfBirth}"></td>
-    </tr>
-    </tbody>
-</table>
-
- Форма для добавления нового маршрута
-<h2>Добавить Маршрут</h2>
-<form id="addRouteForm" th:action="@{/addRoute}" th:object="${newRoute}" method="post">
-    <label for="routeName">Название Маршрута:</label>
-    <input type="text" id="routeName" required/>
-
-    <label for="country">Страна:</label>
-    <input type="text" id="country" required/>
-
-    <label for="duration">Продолжительность (дней):</label>
-    <input type="number" id="duration" required/>
-
-    <button type="submit">Добавить Маршрут</button>
-</form>
-
- Список маршрутов
-<h2>Маршруты</h2>
-<table id="routesTable">
-    <thead>
-    <tr>
-        <th>ID Маршрута</th>
-        <th>Название Маршрута</th>
-        <th>Страна</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="route : ${routes}">
-        <td th:text="${route.routeID}"></td>
-        <td th:text="${route.routeName}"></td>
-        <td th:text="${route.country}"></td>
-    </tr>
-    </tbody>
-</table>
-
- Форма для добавления новой поездки
-<h2>Добавить Поездку</h2>
-<form id="addTripForm" th:action="@{/addTrip}" th:object="${newTrip}" method="post">
-    <label for="routeID">ID Маршрута:</label>
-    <input type="number" id="routeID" required/>
-
-    <label for="companyRepresentative">Представитель Компании:</label>
-    <input type="text" id="companyRepresentative" required/>
-
-    <label for="tripCost">Стоимость Поездки:</label>
-    <input type="number" id="tripCost" required/>
-
-    <button type="submit">Добавить Поездку</button>
-</form>
-
- Список поездок
-<h2>Поездки</h2>
-<table id="tripsTable">
-    <thead>
-    <tr>
-        <th>ID Поездки</th>
-        <th>ID Маршрута</th>
-        <th>Представитель Компании</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="trip : ${trips}">
-        <td th:text="${trip.tripID}"></td>
-        <td th:text="${trip.routeID}"></td>
-        <td th:text="${trip.companyRepresentative}"></td>
-    </tr>
-    </tbody>
-</table>
 
 </body>
 </html>
--->

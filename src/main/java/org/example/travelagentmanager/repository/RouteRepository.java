@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -22,7 +23,7 @@ public class RouteRepository implements RouteRep {
     public RouteRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    private static final RowMapper<Route> RouteRowMapper = new RowMapper<>() {
+    private static final RowMapper<Route> routeRowMapper = new RowMapper<>() {
         @Override
         public Route mapRow(ResultSet rs, int rowNum) throws SQLException {
             Route route = new Route();
@@ -34,27 +35,43 @@ public class RouteRepository implements RouteRep {
         }
     };
     @Override
-    public Route findById(int id) {
-        return null;
+    public Optional<Route> findById(int id) {
+        String sql = "SELECT * FROM routes WHERE id = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, routeRowMapper, id));
     }
 
     @Override
     public List<Route> findAll() {
-        return List.of();
+        String sql = "SELECT * FROM routes";
+        System.out.println(sql);
+        return jdbcTemplate.query(sql, routeRowMapper);
     }
 
     @Override
     public void save(Route route) {
-
+        String sql = "INSERT INTO routes values (id=?, countryid=?, routename=?, duration)";
+        jdbcTemplate.update(
+                sql,
+                route.getId(),
+                route.getCountryId(),
+                route.getRouteName(),
+                route.getDuration());
     }
 
     @Override
-    public void update(Route route) {
-
+    public void update(Route route, int id) {
+        String sql = "UPDATE routes SET countryid=?, routename=?, duration=? WHERE id=?";
+        jdbcTemplate.update(
+                sql,
+                route.getCountryId(),
+                route.getRouteName(),
+                route.getDuration(),
+                id);
     }
 
     @Override
     public void deleteById(int id) {
-
+        String sql = "DELETE FROM routes WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

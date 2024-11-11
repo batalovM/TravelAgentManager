@@ -40,11 +40,25 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
+#loadingSpinner {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 50px;
+}
 
 button:hover {
     background-color: #0056b3;
 }
+.button-container {
+    display: flex;              /* Используем flexbox */
+    gap: 10px;                  /* Промежуток между кнопками */
+}
 
+.button-container button {
+    padding: 10px 20px;         /* Паддинг для кнопок */
+    font-size: 16px;            /* Размер шрифта */
+    cursor: pointer;           /* Курсор как указатель */
+}
 /* Стили для модального окна */
 .modal {
     display: none; /* Скрыто по умолчанию */
@@ -65,6 +79,12 @@ button:hover {
     border: 1px solid #888;
     width: 30%;
     border-radius: 10px;
+}
+.modal-content label,
+.modal-content input {
+    display: block; /* Каждый элемент занимает всю ширину строки */
+    width: 100%; /* Поля ввода занимают всю ширину контейнера */
+    margin-bottom: 10px; /* Отступ между полями */
 }
 
 .close {

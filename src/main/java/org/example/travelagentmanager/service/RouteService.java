@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -18,7 +19,7 @@ public class RouteService {
     public RouteService(RouteRepository routeRepository) {
         this.routeRepository = routeRepository;
     }
-    public Route getRoute(int id) {
+    public Optional<Route> getRouteById(int id) {
         return routeRepository.findById(id);
     }
     public List<Route> getAllRoutes() {
@@ -27,8 +28,8 @@ public class RouteService {
     public void addRoute(Route route) {
         routeRepository.save(route);
     }
-    public void updateRoute(Route route) {
-        routeRepository.update(route);
+    public void updateRoute(Route route, int id) {
+        routeRepository.update(route, id);
     }
     public void deleteRoute(int id) {
         routeRepository.deleteById(id);

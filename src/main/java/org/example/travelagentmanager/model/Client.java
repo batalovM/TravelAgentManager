@@ -2,6 +2,7 @@ package org.example.travelagentmanager.model;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -17,10 +18,10 @@ public class Client {
     private String lastname;
     private String firstname;
     private String surname;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String passportSeries;
     private String passportNumber;
-    private Date dateOfIssue;
+    private LocalDate dateOfIssue;
     private String issueBy;
     private String photo;
 }
