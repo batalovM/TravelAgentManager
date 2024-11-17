@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -19,7 +20,7 @@ public class CountryService {
     public CountryService(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
     }
-    public Country getCountryById(int id) {
+    public Optional<Country> getCountryById(int id) {
         return countryRepository.findById(id);
     }
 
@@ -31,8 +32,8 @@ public class CountryService {
         countryRepository.save(country);
     }
 
-    public void updateCountry(Country country) {
-        countryRepository.update(country);
+    public void updateCountry(Country country, int id) {
+        countryRepository.update(country, id);
     }
 
     public void deleteCountry(int id) {

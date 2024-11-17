@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -18,7 +19,7 @@ public class HotelService {
     public HotelService(HotelRepository hotelRepository) {
         this.hotelRepository = hotelRepository;
     }
-    public Hotel getHotelById(int id) {
+    public Optional<Hotel> getHotelById(int id) {
         return hotelRepository.findById(id);
     }
     public List<Hotel> getAllHotels() {
@@ -27,8 +28,8 @@ public class HotelService {
     public void addHotel(Hotel hotel) {
         hotelRepository.save(hotel);
     }
-    public void updateHotel(Hotel hotel) {
-        hotelRepository.update(hotel);
+    public void updateHotel(Hotel hotel, int id) {
+        hotelRepository.update(hotel, id);
     }
     public void deleteHotel(int id) {
         hotelRepository.deleteById(id);

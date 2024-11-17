@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -18,7 +19,7 @@ public class EmployeeService {
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
-    public Employee getEmployeeById(int id) {
+    public Optional<Employee> getEmployeeById(int id) {
         return employeeRepository.findById(id);
     }
 
@@ -30,8 +31,8 @@ public class EmployeeService {
         employeeRepository.save(employee);
     }
 
-    public void updateEmployee(Employee employee) {
-        employeeRepository.update(employee);
+    public void updateEmployee(Employee employee, int id) {
+        employeeRepository.update(employee, id);
     }
 
     public void deleteEmployee(int id) {

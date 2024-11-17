@@ -23,22 +23,19 @@ public class ClientRepository implements ClientRep {
     public ClientRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    private static final RowMapper<Client> clientRowMapper = new RowMapper<>() {
-        @Override
-        public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Client client = new Client();
-            client.setId(rs.getInt("id"));
-            client.setLastname(rs.getString("lastname"));
-            client.setFirstname(rs.getString("firstname"));
-            client.setSurname(rs.getString("surname"));
-            client.setDateOfBirth(rs.getDate("dateofbirth").toLocalDate());
-            client.setPassportSeries(rs.getString("passportseries"));
-            client.setPassportNumber(rs.getString("passportnumber"));
-            client.setDateOfIssue(rs.getDate("dateofissue").toLocalDate());
-            client.setIssueBy(rs.getString("issuedby"));
-            client.setPhoto(rs.getString("photo"));
-            return client;
-        }
+    private static final RowMapper<Client> clientRowMapper = (rs, rowNum) -> {
+        Client client = new Client();
+        client.setId(rs.getInt("id"));
+        client.setLastname(rs.getString("lastname"));
+        client.setFirstname(rs.getString("firstname"));
+        client.setSurname(rs.getString("surname"));
+        client.setDateOfBirth(rs.getDate("dateofbirth").toLocalDate());
+        client.setPassportSeries(rs.getString("passportseries"));
+        client.setPassportNumber(rs.getString("passportnumber"));
+        client.setDateOfIssue(rs.getDate("dateofissue").toLocalDate());
+        client.setIssueBy(rs.getString("issuedby"));
+        client.setPhoto(rs.getString("photo"));
+        return client;
     };
     @Override
     public Optional<Client> findById(int id) {
@@ -49,7 +46,6 @@ public class ClientRepository implements ClientRep {
     @Override
     public List<Client> findAll() {
         String sql = "SELECT * FROM clients";
-        System.out.println(sql);
         return jdbcTemplate.query(sql, clientRowMapper);
     }
 

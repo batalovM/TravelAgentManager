@@ -3,67 +3,52 @@ package org.example.travelagentmanager.controllers;
 import org.example.travelagentmanager.model.City;
 import org.example.travelagentmanager.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
  * @Date 10.10.2024
  */
-@Controller
-@RequestMapping("/cities")
+@RestController
+@RequestMapping("/api/city")
 public class CityController {
-
     private final CityService cityService;
     @Autowired
     public CityController(CityService cityService) {
         this.cityService = cityService;
     }
-    // Получение списка всех городов и передача их в шаблон
     @GetMapping
-    public String getAllCities(Model model) {
-        List<City> cities = cityService.getAllCities();
-        model.addAttribute("cities", cities);
-        return "cities/list"; // возвращаем шаблон list.html
+    public List<City> getAllCities() {
+        return cityService.getAllCities();
     }
-
-    // Показать форму для добавления нового города
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("city", new City());
-        return "cities/create"; // возвращаем шаблон create.html
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<City>> getCityById(@PathVariable int id) {
+        Optional<City> city = cityService.getCityById(id);
+        if(city.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(city);
     }
-
-    // Обработать форму добавления нового города
-    @PostMapping
-    public String addCity(@ModelAttribute("city") City city) {
+    @PostMapping("/addCity")
+    public ResponseEntity<City> addCity(@RequestBody City city) {
         cityService.addCity(city);
-        return "redirect:/cities"; // перенаправляем на список городов
+        return ResponseEntity.status(HttpStatus.CREATED).body(city);
     }
 
-    // Показать форму для редактирования существующего города
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable int id, Model model) {
-        City city = cityService.getCityById(id);
-        model.addAttribute("city", city);
-        return "cities/edit"; // возвращаем шаблон edit.html
+    @PutMapping("/{id}")
+    public ResponseEntity<City> updateCity(@PathVariable int id, @RequestBody City city) {
+        cityService.updateCity(city, id);
+        return ResponseEntity.ok(city);
     }
 
-    // Обработать форму редактирования города
-    @PostMapping("/update/{id}")
-    public String updateCity(@PathVariable int id, @ModelAttribute("city") City city) {
-        city.setId(id);
-        cityService.updateCity(city);
-        return "redirect:/cities";
-    }
-
-    // Удаление города
-    @GetMapping("/delete/{id}")
-    public String deleteCity(@PathVariable int id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<City> deleteCity(@PathVariable int id) {
         cityService.deleteCity(id);
-        return "redirect:/cities";
+        return ResponseEntity.noContent().build();
     }
 }

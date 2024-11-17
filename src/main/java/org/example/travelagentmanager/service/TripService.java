@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -18,7 +19,7 @@ public class TripService {
     public TripService(TripRepository tripRepository) {
         this.tripRepository = tripRepository;
     }
-    public Trip getTrip(int id) {
+    public Optional<Trip> getTripById(int id) {
         return tripRepository.findById(id);
     }
     public List<Trip> getAllTrips() {
@@ -27,8 +28,8 @@ public class TripService {
     public void addTrip(Trip trip) {
         tripRepository.save(trip);
     }
-    public void updateTrip(Trip trip) {
-        tripRepository.update(trip);
+    public void updateTrip(Trip trip, int id) {
+        tripRepository.update(trip, id);
     }
     public void deleteTrip(int id) {
         tripRepository.deleteById(id);

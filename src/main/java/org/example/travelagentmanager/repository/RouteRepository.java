@@ -23,16 +23,13 @@ public class RouteRepository implements RouteRep {
     public RouteRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    private static final RowMapper<Route> routeRowMapper = new RowMapper<>() {
-        @Override
-        public Route mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Route route = new Route();
-            route.setId(rs.getInt("id"));
-            route.setCountryId(rs.getInt("countryid"));
-            route.setRouteName(rs.getString("routename"));
-            route.setDuration(rs.getInt("duration"));
-            return route;
-        }
+    private static final RowMapper<Route> routeRowMapper = (rs, rowNum) -> {
+        Route route = new Route();
+        route.setId(rs.getInt("id"));
+        route.setCountryId(rs.getInt("countryid"));
+        route.setRouteName(rs.getString("routename"));
+        route.setDuration(rs.getInt("duration"));
+        return route;
     };
     @Override
     public Optional<Route> findById(int id) {

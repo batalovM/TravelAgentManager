@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -18,7 +19,7 @@ public class CityService {
     public CityService(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
     }
-    public City getCityById(int id) {
+    public Optional<City> getCityById(int id) {
         return cityRepository.findById(id);
     }
 
@@ -30,8 +31,8 @@ public class CityService {
         cityRepository.save(city);
     }
 
-    public void updateCity(City city) {
-        cityRepository.update(city);
+    public void updateCity(City city, int id) {
+        cityRepository.update(city, id);
     }
 
     public void deleteCity(int id) {

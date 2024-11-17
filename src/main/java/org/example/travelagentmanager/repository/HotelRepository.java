@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batal
@@ -23,38 +24,40 @@ public class HotelRepository implements HotelRep {
     public HotelRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    private static final RowMapper<Hotel> hotelRowMapper = new RowMapper<>() {
-        @Override
-        public Hotel mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Hotel hotel = new Hotel();
-            hotel.setId(rs.getInt("id"));
-            hotel.setHotelName(rs.getString("hotelname"));
-            hotel.setHotelClass(rs.getInt("hotelclass"));
-            return hotel;
-        }
+    private static final RowMapper<Hotel> hotelRowMapper = (rs, rowNum) -> {
+        Hotel hotel = new Hotel();
+        hotel.setId(rs.getInt("id"));
+        hotel.setHotelName(rs.getString("hotelname"));
+        hotel.setHotelClass(rs.getInt("hotelclass"));
+        return hotel;
     };
     @Override
-    public Hotel findById(int id) {
-        return null;
+    public Optional<Hotel> findById(int id) {
+        String sql = "select * from hotel where id = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, hotelRowMapper, id));
     }
 
     @Override
     public List<Hotel> findAll() {
-        return List.of();
+        String sql = "select * from hotel";
+        return jdbcTemplate.query(sql, hotelRowMapper);
     }
 
     @Override
     public void save(Hotel hotel) {
-
+        String sql = "insert into hotel (hotelname, hotelclass) VALUES (?, ?)";
+        jdbcTemplate.update(sql, hotel.getHotelName(), hotel.getHotelClass());
     }
 
     @Override
-    public void update(Hotel hotel) {
-
+    public void update(Hotel hotel, int id) {
+        String sql = "update hotel set hotelname = ?, hotelclass = ? where id = ? ";
+        jdbcTemplate.update(sql, hotel.getHotelName(), hotel.getHotelClass(), id);
     }
 
     @Override
     public void deleteById(int id) {
-
+        String sql = "delete from hotel where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }
