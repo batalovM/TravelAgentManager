@@ -1,33 +1,67 @@
-
-import { closeModal } from '../modal.js';
-import {renderTablePage} from './pagination.js';
-
+// Функция для загрузки клиентов с сервера и отображения на странице
 export async function loadClients(rowsPerPage, currentPage, loadingSpinner, tableBody, clientsData) {
     loadingSpinner.style.display = "block"; // Показываем индикатор загрузки
-    // Запрашиваем данные клиентов через API
     fetch('/api/clients')
-        .then(response => response.json())  // Преобразуем ответ в формат JSON
+        .then(response => response.json())
         .then(clients => {
-            clientsData = clients; // Сохраняем данные клиентов в переменную
-            // Перезаполняем таблицу
-            renderTablePage(currentPage, rowsPerPage, tableBody, clientsData);
-
-            // Перерасчет количества страниц
+            clientsData = clients; // Сохраняем данные клиентов
+            renderTablePage(currentPage, rowsPerPage, tableBody, clientsData); // Перезаполняем таблицу
             const totalPages = Math.ceil(clientsData.length / rowsPerPage);
             document.getElementById("pageNumber").innerText = `${currentPage} / ${totalPages}`;
         })
-        .catch(error => {
-            console.error('Ошибка при загрузке клиентов:', error);
-        })
-        .finally(() => {
-            loadingSpinner.style.display = "none"; // Скрываем индикатор загрузки после завершения
-        });
-
+        .catch(error => console.error('Ошибка при загрузке клиентов:', error))
+        .finally(() => loadingSpinner.style.display = "none"); // Скрываем индикатор
 }
 
+// Функция для отображения данных клиентов в таблице
+function renderTablePage(currentPage, rowsPerPage, tableBody, clientsData) {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageClients = clientsData.slice(start, end);
+
+    // Очищаем таблицу перед добавлением новых строк
+    tableBody.innerHTML = '';
+
+    // Заполняем таблицу данными клиентов
+    pageClients.forEach(client => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+            <td>${client.id}</td>
+            <td>${client.lastname}</td>
+            <td>${client.firstname}</td>
+            <td>${client.surname}</td>
+            <td>${client.dateOfBirth}</td>
+            <td>${client.passportSeries}</td>
+            <td>${client.passportNumber}</td>
+            <td>${client.dateOfIssue}</td>
+            <td>${client.issueBy}</td>
+            <td>${client.photo}</td>
+        `;
+        // Функция для перехода на следующую страницу
+        function nextPage() {
+            const totalPages = Math.ceil(clientsData.length / rowsPerPage); // Перерасчет общего числа страниц
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTablePage(currentPage, rowsPerPage, tableBody, clientsData); // Отображаем следующую страницу
+                document.getElementById("pageNumber").innerText = `${currentPage} / ${totalPages}`;
+            }
+        }
+// Функция для перехода на предыдущую страницу
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTablePage(currentPage, rowsPerPage, tableBody, clientsData); // Отображаем предыдущую страницу
+                document.getElementById("pageNumber").innerText = `${currentPage} / ${Math.ceil(clientsData.length / rowsPerPage)}`;
+            }
+        }
+        window.nextPage = nextPage;
+        window.prevPage = prevPage;
+    });
+}
+
+// Функция для добавления клиента
 export function addClient(event) {
-    event.preventDefault(); // Останавливаем стандартную отправку формы
-    // Собираем данные формы
+    event.preventDefault();
     const newClient = {
         lastname: document.getElementById('lastname').value,
         firstname: document.getElementById('firstname').value,
@@ -39,35 +73,28 @@ export function addClient(event) {
         issueBy: document.getElementById('issueBy').value,
         photo: document.getElementById('photo').value
     };
-    // Отправляем данные на сервер с помощью fetch
+
     fetch('/api/clients/addClients', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newClient)  // Преобразуем объект клиента в JSON
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newClient)
     })
         .then(response => {
             if (response.ok) {
-                // Закрываем модальное окно после успешной отправки данных
+                alert('Клиент добавлен!');
                 closeModal('clientModal');
-                const loadingSpinner = document.getElementById("loadingSpinnerForClients");
-                const tableBody = document.querySelector("#clientsTable tbody");
-                loadClients(5, 1, loadingSpinner, tableBody, []);  // Перезагружаем список клиентов
+                loadClients(5, 1, document.getElementById("loadingSpinnerForClients"), document.querySelector("#clientsTable"), []);
             } else {
                 throw new Error('Не удалось добавить клиента');
             }
         })
-        .catch(error => {
-            console.error('Ошибка при добавлении клиента:', error);
-        });
+        .catch(error => console.error('Ошибка при добавлении клиента:', error));
 }
 
+// Функция для поиска клиента по ID
 export function findClientById(event) {
     event.preventDefault();
-
     const clientId = document.getElementById("updateId").value;
-
     fetch(`/api/clients/${clientId}`)
         .then(response => {
             if (!response.ok) throw new Error('Клиент не найден');
@@ -83,15 +110,14 @@ export function findClientById(event) {
             document.getElementById("dateOfIssue1").value = client.dateOfIssue;
             document.getElementById("issueBy1").value = client.issueBy;
             document.getElementById("photo1").value = client.photo;
-
-            document.getElementById("updateForm").style.display = "block";
+            document.getElementById("updateClientForm").style.display = "block";
         })
         .catch(error => alert("Ошибка: " + error.message));
 }
 
+// Функция для обновления данных клиента
 export function updateClient(event) {
     event.preventDefault();
-
     const clientId = document.getElementById("updateId").value;
     const updatedClient = {
         lastname: document.getElementById("lastname1").value,
@@ -114,25 +140,20 @@ export function updateClient(event) {
             if (!response.ok) throw new Error('Не удалось обновить клиента');
             alert("Данные клиента обновлены!");
             closeModal('clientUpdateModal');
-            const loadingSpinner = document.getElementById("loadingSpinnerForClients");
-            const tableBody = document.querySelector("#clientsTable tbody");
-            loadClients(5, 1, loadingSpinner, tableBody, []);  // Перезагружаем список клиентов
+            loadClients(5, 1, document.getElementById("loadingSpinnerForClients"), document.querySelector("#clientsTable"), []);
         })
         .catch(error => alert("Ошибка: " + error.message));
 }
 
+// Функция для удаления клиента
 export function deleteClient(event) {
     event.preventDefault();
-
     const clientId = document.getElementById("deleteId").value;
-
     fetch(`/api/clients/${clientId}`, { method: 'DELETE' })
         .then(response => {
             if (!response.ok) throw new Error('Ошибка при удалении клиента');
             closeModal('deleteModal');
-            const loadingSpinner = document.getElementById("loadingSpinnerForClients");
-            const tableBody = document.querySelector("#clientsTable tbody");
-            loadClients(5, 1, loadingSpinner, tableBody, []);  // Перезагружаем список клиентов
+            loadClients(5, 1, document.getElementById("loadingSpinnerForClients"), document.querySelector("#clientsTable"), []);
         })
         .catch(error => alert("Ошибка: " + error.message));
 }

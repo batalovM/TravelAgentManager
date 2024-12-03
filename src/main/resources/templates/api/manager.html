@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <title>Управление Туристическим Агентством</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+  <meta charset="UTF-8">
+  <script type="module" src="ClientApi/main.js" defer></script>
+  <script type="module" src="RoutesApi/main.js" defer></script>
+
+</head>
+<body>
+<h1>Управление Туристическим Агентством</h1>
+
+<!-- Список клиентов -->
+<h2>Клиенты</h2>
+<table>
+  <thead>
+  <tr>
+    <th>id</th>
+    <th>Фамилия</th>
+    <th>Имя</th>
+    <th>Отчество</th>
+    <th>Дата Рождения</th>
+    <th>Серия паспорта</th>
+    <th>Номер паспорта</th>
+    <th>Дата выдачи</th>
+    <th>Кем выдан</th>
+    <th>Фотография</th>
+  </tr>
+  </thead>
+</table>
+<div id="loadingSpinnerForClients" style="display:none;">Загрузка...</div>
+
+<table id="clientsTable">
+  <tbody>
+
+  </tbody>
+</table>
+
+<div class="button-container">
+  <button onclick="openModal('clientModal')">Добавить Клиента</button>
+  <button onclick="openModal('clientUpdateModal')">Обновить Клиента</button>
+  <button onclick="openModal('deleteModal')">Удалить Клиента</button>
+</div>
+
+<!-- Модальное окно для добавления клиента -->
+<div id="clientModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('clientModal')">&times;</span>
+    <h2>Добавить Клиента</h2>
+    <form id="addClientForm">
+      <label for="lastname">Фамилия:</label>
+      <input type="text" id="lastname" name="lastname" required>
+
+      <label for="firstname">Имя:</label>
+      <input type="text" id="firstname" name="firstname" required>
+
+      <label for="surname">Отчество:</label>
+      <input type="text" id="surname" name="surname" required>
+
+      <label for="dateOfBirth">Дата Рождения:</label>
+      <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+
+      <label for="passportSeries">Серия паспорта:</label>
+      <input type="text" id="passportSeries" name="passportSeries" required>
+
+      <label for="passportNumber">Номер паспорта:</label>
+      <input type="text" id="passportNumber" name="passportNumber" required>
+
+      <label for="dateOfIssue">Дата выдачи:</label>
+      <input type="date" id="dateOfIssue" name="dateOfIssue" required>
+
+      <label for="issueBy">Кем выдан:</label>
+      <input type="text" id="issueBy" name="issueBy" required>
+
+      <label for="photo">Фотография:</label>
+      <input type="text" id="photo" name="photo" required>
+
+      <button type="submit">Добавить</button>
+    </form>
+  </div>
+</div>
+
+<!-- Модальное окно для обновления клиента -->
+<div id="clientUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('clientUpdateModal')">&times;</span>
+    <h2>Обновить Клиента</h2>
+    <form id="updateClientForm">
+      <label for="updateId">Введите ID клиента для поиска:</label>
+      <input type="text" id="updateId" name="id" required>
+      <button type="submit">Поиск</button>
+    </form>
+    <form id="updateForm" style="display: none;">
+      <label for="lastname1">Фамилия:</label>
+      <input type="text" id="lastname1" name="lastname" required>
+
+      <label for="firstname1">Имя:</label>
+      <input type="text" id="firstname1" name="firstname" required>
+
+      <label for="surname1">Отчество:</label>
+      <input type="text" id="surname1" name="surname" required>
+
+      <label for="dateOfBirth1">Дата Рождения:</label>
+      <input type="date" id="dateOfBirth1" name="dateOfBirth" required>
+
+      <label for="passportSeries1">Серия паспорта:</label>
+      <input type="text" id="passportSeries1" name="passportSeries" required>
+
+      <label for="passportNumber1">Номер паспорта:</label>
+      <input type="text" id="passportNumber1" name="passportNumber" required>
+
+      <label for="dateOfIssue1">Дата выдачи:</label>
+      <input type="date" id="dateOfIssue1" name="dateOfIssue" required>
+
+      <label for="issueBy1">Кем выдан:</label>
+      <input type="text" id="issueBy1" name="issueBy" required>
+
+      <label for="photo1">Фотография:</label>
+      <input type="text" id="photo1" name="photo" required>
+
+      <button type="submit">Обновить</button>
+    </form>
+  </div>
+</div>
+
+<!-- Модальное окно для удаления клиента -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+    <h2>Удалить Клиента</h2>
+    <form id="deleteClientForm">
+      <label for="updateId">Введите ID клиента для удаления:</label>
+      <input type="text" id="deleteId" name="id" required>
+      <button type="submit">Удалить</button>
+    </form>
+  </div>
+</div>
+
+<!-- Пагинация -->
+<div id="paginationControls">
+  <button onclick="prevPage()">Назад</button>
+  <span id="pageNumber">1</span>
+  <button onclick="nextPage()">Вперед</button>
+</div>
+
+<h2>Маршруты</h2>
+<table>
+  <thead>
+  <tr>
+    <th>id</th>
+    <th>id_Страны</th>
+    <th>Название маршрута</th>
+    <th>Длительность маршрута(в сутках)</th>
+  </tr>
+  </thead>
+</table>
+<div id="loadingSpinnerForRoutes" style="display:none;">Загрузка...</div>
+<table id="routesTable">
+  <tbody>
+
+  </tbody>
+</table>
+<div class="button-container">
+  <button onclick="openModal('routeModal')">Добавить Маршрут</button>
+  <button onclick="openModal('routeUpdateModal')">Обновить Маршрут</button>
+  <button onclick="openModal('routeDeleteModal')">Удалить Маршрут</button>
+</div>
+<!-- Модальное окно для добавления маршрута -->
+<div id="routeModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('routeModal')">&times;</span>
+    <h2>Добавить Клиента</h2>
+    <form id="addRouteForm">
+      <button type="submit">Добавить</button>
+    </form>
+  </div>
+</div>
+
+
+
+<!--&lt;!&ndash; Пагинация &ndash;&gt;-->
+<!--<div id="routePaginationControls">-->
+<!--    <button onclick="prevPage()">Назад</button>-->
+<!--    <span id="routePageNumber">1</span>-->
+<!--    <button onclick="nextPage()">Вперед</button>-->
+<!--</div>-->
+
+
+</body>
+</html>
