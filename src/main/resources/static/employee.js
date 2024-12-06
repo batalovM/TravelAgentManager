@@ -63,11 +63,11 @@ function renderEmployeeTablePage(currentPage, rowsPerPage, tableBody, employeesD
 export function addEmployee(event) {
     event.preventDefault();
     const newEmployee = {
-        lastname: document.getElementById('employeeLastname').value,
-        firstname: document.getElementById('employeeFirstname').value,
-        surname: document.getElementById('employeeSurname').value
+        lastName: document.getElementById('employeeLastname').value,
+        firstName: document.getElementById('employeeFirstname').value,
+        surName: document.getElementById('employeeSurname').value
     };
-
+    console.log(newEmployee)
     fetch('/api/employee/addEmployee', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

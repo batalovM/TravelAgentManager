@@ -39,7 +39,7 @@ public class RouteController {
         return ResponseEntity.ok(route);
     }
 
-    @PostMapping("/addClients")
+    @PostMapping("/addRoutes")
     public ResponseEntity<Route> addRoute(@RequestBody Route route) {
         routeService.addRoute(route);
         return ResponseEntity.status(HttpStatus.CREATED).body(route);
