@@ -1,59 +1,105 @@
-// Функция для загрузки экскурсий с сервера и отображения на странице
-export async function loadExcursions(rowsPerPage, currentPage, loadingSpinner, tableBody, excursionsData) {
-    if (!loadingSpinner) {
-        console.error("Элемент 'loadingSpinner' не найден.");
-        return;
-    }
-    loadingSpinner.style.display = "block"; // Показываем индикатор загрузки
+const excursionApiUrl = "http://localhost:8080/api/excursions";
 
-    try {
-        const response = await fetch('/api/excursions');
-        excursionsData = await response.json();
+const excursionOverlay = document.querySelector("#excursionOverlay");
+const updateExcursionModal = document.querySelector("#updateExcursionModal");
+const excursionStep1 = document.querySelector("#excursionStep1");
+const excursionStep2 = document.querySelector("#excursionStep2");
 
-        renderExcursionTablePage(currentPage, rowsPerPage, tableBody, excursionsData);
 
-        const totalPages = Math.ceil(excursionsData.length / rowsPerPage);
-        document.getElementById("pageNumberExcursion").innerText = `${currentPage} / ${totalPages}`;
-    } catch (error) {
-        console.error('Ошибка при загрузке экскурсий:', error);
-    } finally {
-        loadingSpinner.style.display = "none"; // Скрываем индикатор загрузки после завершения
-    }
+function openExcursionModal(modal) {
+    modal.classList.add("active");
+    excursionOverlay.classList.add("active");
+}
+function closeExcursionModal() {
+    document.querySelectorAll("#updateExcursionModal, #addExcursionModal, #deleteExcursionModal").forEach(modal => modal.classList.remove("active"));
+    excursionOverlay.classList.remove("active");
+    excursionStep1.style.display = "block";
+    excursionStep2.style.display = "none";
 }
 
-// Функция для отображения данных экскурсий в таблице
-function renderExcursionTablePage(currentPage, rowsPerPage, tableBody, excursionsData) {
-    const start = (currentPage - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    const pageExcursions = excursionsData.slice(start, end);
+excursionOverlay.addEventListener("click", closeExcursionModal);
 
-    tableBody.innerHTML = ''; // Очищаем таблицу
+// Функционал для кнопки добавления экскурсионной программы'
+document.querySelector("#addExcursionButton").addEventListener("click", () => openExcursionModal(document.querySelector("#addExcursionModal")));
+// Загрузка данных экскурсионной программы для обновления
+document.querySelector("#fetchExcursionForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = document.querySelector("#fetchExcursionId").value;
+    const response = await fetch(`${excursionApiUrl}/${id}`);
+    if (response.ok) {
+        const excursion = await response.json();
+        // Заполняем поля данными сотрудника
+        document.querySelector("#updateExcursionName").value = excursion.excursionProgramName || "";
+        // Переход ко второму шагу
+        excursionStep1.style.display = "none";
+        excursionStep2.style.display = "block";
+    } else {
+        alert("Программа с таким ID не найдена!");
+    }
+});
 
-    pageExcursions.forEach(excursion => {
-        const row = tableBody.insertRow();
+
+
+// Функционал для кнопки обновления сотрудника
+document.querySelector("#updateExcursionButton").addEventListener("click", () => openExcursionModal(updateExcursionModal));
+// Функционал для кнопки удаления экскурсионной программы
+document.querySelector("#deleteExcursionButton").addEventListener("click", () => openExcursionModal(document.querySelector("#deleteExcursionModal")));
+// Отправка обновлённых данных экскурсионной программы
+document.querySelector("#updateExcursionForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = document.querySelector("#fetchExcursionId").value;
+    const excursion = {
+        excursionProgramName: document.querySelector("#updateExcursionName").value,
+    };
+    await fetch(`${excursionApiUrl}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(excursion),
+    });
+    closeExcursionModal();
+    loadExcursions();
+});
+// Функционал для кнопки поиска
+document.querySelector("#searchExcursionButton").addEventListener("click", () => {
+    const searchExcursionInput = document.querySelector("#searchExcursionInput");
+    searchExcursionInput.style.display = searchExcursionInput.style.display === "none" || searchExcursionInput.style.display === "" ? "block" : "none";
+});
+document.querySelector("#searchExcursionInput").addEventListener("input", async (e) => {
+    const query = e.target.value.toLowerCase();
+    const response = await fetch(excursionApiUrl);
+    const excursions = await response.json();
+    const filteredExcursions = excursions.filter(excursion =>
+        excursion.excursionProgramName.toLowerCase().includes(query)
+    );
+    renderExcursions(filteredExcursions);
+});
+// Функционал для удаления экскурсионной программы
+document.querySelector("#deleteExcursionForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = document.querySelector("#deleteExcursionId").value;
+    await fetch(`${excursionApiUrl}/${id}`, {
+        method: "DELETE",
+    });
+    closeExcursionModal();
+    loadExcursions();
+});
+
+// Загрузка всех программ экскурсий
+async function loadExcursions() {
+    const response = await fetch(excursionApiUrl);
+    const excursions = await response.json();
+    renderExcursions(excursions);
+}
+function renderExcursions(excursions) {
+    const tableBody = document.querySelector("#excursionsTable tbody");
+    tableBody.innerHTML = "";
+    excursions.forEach(excursion => {
+        const row = document.createElement("tr");
         row.innerHTML = `
             <td>${excursion.id}</td>
             <td>${excursion.excursionProgramName}</td>
         `;
-        // Функция для перехода на следующую страницу
-        function nextPageExcursion() {
-            const totalPages = Math.ceil(excursionsData.length / rowsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderExcursionTablePage(currentPage, rowsPerPage, tableBody, excursionsData);
-                document.getElementById("pageNumberExcursion").innerText = `${currentPage} / ${totalPages}`;
-            }
-        }
-
-// Функция для перехода на предыдущую страницу
-        function prevPageExcursion() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderExcursionTablePage(currentPage, rowsPerPage, tableBody, excursionsData);
-                document.getElementById("pageNumberExcursion").innerText = `${currentPage} / ${Math.ceil(excursionsData.length / rowsPerPage)}`;
-            }
-        }
-        window.nextPageExcursion = nextPageExcursion;
-        window.prevPageExcursion = prevPageExcursion;
+        tableBody.appendChild(row);
     });
 }
+loadExcursions();

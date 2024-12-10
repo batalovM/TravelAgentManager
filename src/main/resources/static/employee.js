@@ -1,141 +1,176 @@
-// Функция для загрузки сотрудников с сервера и отображения на странице
-export async function loadEmployees(rowsPerPage, currentPage, loadingSpinner, tableBody, employeesData) {
-    if (!loadingSpinner) {
-        console.error("Элемент 'loadingSpinner' не найден.");
-        return;
-    }
-    loadingSpinner.style.display = "block"; // Показываем индикатор загрузки
-    fetch('/api/employee')
-        .then(response => response.json())
-        .then(employees => {
-            employeesData = employees; // Сохраняем данные сотрудников
-            renderEmployeeTablePage(currentPage, rowsPerPage, tableBody, employeesData); // Перезаполняем таблицу
-            const totalPages = Math.ceil(employeesData.length / rowsPerPage);
-            document.getElementById("pageNumberEmployee").innerText = `${currentPage} / ${totalPages}`;
-        })
-        .catch(error => console.error('Ошибка при загрузке сотрудников:', error))
-        .finally(() => loadingSpinner.style.display = "none"); // Скрываем индикатор
-}
+document.addEventListener("DOMContentLoaded", function () {
+    const employeesTableBody = document.querySelector("#employeesTable tbody");
+    const addEmployeeButton = document.getElementById("addEmployeeButton");
+    const updateEmployeeButton = document.getElementById("updateEmployeeButton");
+    const deleteEmployeeButton = document.getElementById("deleteEmployeeButton");
+    const searchEmployeeButton = document.getElementById("searchEmployeeButton");
+    const searchEmployeeInput = document.getElementById("searchEmployeeInput");
 
-// Функция для отображения данных сотрудников в таблице
-function renderEmployeeTablePage(currentPage, rowsPerPage, tableBody, employeesData) {
-    const start = (currentPage - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    const pageEmployees = employeesData.slice(start, end);
+    // Загрузка всех сотрудников при загрузке страницы
+    loadEmployees();
 
-    // Очищаем таблицу перед добавлением новых строк
-    tableBody.innerHTML = '';
-
-    // Заполняем таблицу данными сотрудников
-    pageEmployees.forEach(employee => {
-        const row = tableBody.insertRow();
-        row.innerHTML = `
-            <td>${employee.id}</td>
-            <td>${employee.lastName}</td>
-            <td>${employee.firstName}</td>
-            <td>${employee.surName}</td>
-        `;
-        // Функция для перехода на следующую страницу
-        function nextPageEmployee() {
-            const totalPages = Math.ceil(employeesData.length / rowsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderEmployeeTablePage(currentPage, rowsPerPage, tableBody, employeesData);
-                document.getElementById("pageNumberEmployee").innerText = `${currentPage} / ${totalPages}`;
-            }
-        }
-
-// Функция для перехода на предыдущую страницу
-        function prevPageEmployee() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderEmployeeTablePage(currentPage, rowsPerPage, tableBody, employeesData);
-                document.getElementById("pageNumberEmployee").innerText = `${currentPage} / ${Math.ceil(employeesData.length / rowsPerPage)}`;
-            }
-        }
-        window.nextPageEmployee = nextPageEmployee;
-        window.prevPageEmployee = prevPageEmployee;
+    // Обработка добавления сотрудника
+    addEmployeeButton.addEventListener("click", function () {
+        const addEmployeeModal = document.getElementById("addEmployeeModal");
+        addEmployeeModal.style.display = "block";
     });
-}
 
+    document.getElementById("addEmployeeForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const newEmployee = {
+            lastName: document.getElementById("addEmployeeLastname").value,
+            firstName: document.getElementById("addEmployeeFirstname").value,
+            surName: document.getElementById("addEmployeeSurname").value,
+        };
 
-// Функция для добавления сотрудника
-export function addEmployee(event) {
-    event.preventDefault();
-    const newEmployee = {
-        lastName: document.getElementById('employeeLastname').value,
-        firstName: document.getElementById('employeeFirstname').value,
-        surName: document.getElementById('employeeSurname').value
-    };
-    console.log(newEmployee)
-    fetch('/api/employee/addEmployee', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEmployee)
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Сотрудник добавлен!');
-                closeModal('employeeModal');
-                loadEmployees(5, 1, document.getElementById("loadingSpinnerForEmployee"), document.querySelector("#employeeTable"), []);
-            } else {
-                throw new Error('Не удалось добавить сотрудника');
-            }
+        fetch("/api/employee/addEmployee", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newEmployee),
         })
-        .catch(error => console.error('Ошибка при добавлении сотрудника:', error));
-}
+            .then(response => {
+                if (response.ok) {
+                    loadEmployees();
+                    closeEmployeeModal(addEmployeeModal);
+                } else {
+                    alert("Ошибка при добавлении сотрудника");
+                }
+            })
+            .catch(error => console.error("Ошибка:", error));
+    });
 
-// Функция для поиска сотрудника по ID
-export function findEmployeeById(event) {
-    event.preventDefault();
-    const employeeId = document.getElementById("updateEmployeeId").value;
-    fetch(`/api/employee/${employeeId}`)
-        .then(response => {
-            if (!response.ok) throw new Error('Сотрудник не найден');
-            return response.json();
-        })
-        .then(employee => {
-            document.getElementById("employeeLastname1").value = employee.lastName;
-            document.getElementById("employeeFirstname1").value = employee.firstName;
-            document.getElementById("employeeSurname1").value = employee.surName;
-            document.getElementById("updateEmployeeForm").style.display = "block";
-        })
-        .catch(error => alert("Ошибка: " + error.message));
-}
+    // Обработка обновления сотрудника
+    updateEmployeeButton.addEventListener("click", function () {
+        const updateEmployeeModal = document.getElementById("updateEmployeeModal");
+        updateEmployeeModal.style.display = "block";
+        document.getElementById("employeeStep1").style.display = "block";
+        document.getElementById("employeeStep2").style.display = "none";
+    });
 
-// Функция для обновления данных сотрудника
-export function updateEmployee(event) {
-    event.preventDefault();
-    const employeeId = document.getElementById("updateEmployeeId").value;
-    const updatedEmployee = {
-        lastName: document.getElementById("employeeLastname1").value,
-        firstName: document.getElementById("employeeFirstname1").value,
-        surName: document.getElementById("employeeSurname1").value
-    };
+    document.getElementById("fetchEmployeeForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const employeeId = document.getElementById("fetchEmployeeId").value;
 
-    fetch(`/api/employee/${employeeId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedEmployee)
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Не удалось обновить сотрудника');
-            alert("Данные сотрудника обновлены!");
-            closeModal('employeeUpdateModal');
-            loadEmployees(5, 1, document.getElementById("loadingSpinnerForEmployee"), document.querySelector("#employeeTable"), []);
-        })
-        .catch(error => alert("Ошибка: " + error.message));
-}
+        fetch(`/api/employee/${employeeId}`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    alert("Сотрудник не найден");
+                }
+            })
+            .then(data => {
+                if (data) {
+                    document.getElementById("updateEmployeeLastname").value = data.lastName;
+                    document.getElementById("updateEmployeeFirstname").value = data.firstName;
+                    document.getElementById("updateEmployeeSurname").value = data.surName;
 
-// Функция для удаления сотрудника
-export function deleteEmployee(event) {
-    event.preventDefault();
-    const employeeId = document.getElementById("deleteEmployeeId").value;
-    fetch(`/api/employee/${employeeId}`, { method: 'DELETE' })
-        .then(response => {
-            if (!response.ok) throw new Error('Ошибка при удалении сотрудника');
-            closeModal('employeeDeleteModal');
-            loadEmployees(5, 1, document.getElementById("loadingSpinnerForEmployee"), document.querySelector("#employeeTable"), []);
+                    document.getElementById("employeeStep1").style.display = "none";
+                    document.getElementById("employeeStep2").style.display = "block";
+                }
+            })
+            .catch(error => console.error("Ошибка:", error));
+    });
+
+    document.getElementById("updateEmployeeForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const employeeId = document.getElementById("fetchEmployeeId").value;
+        const updatedEmployee = {
+            lastName: document.getElementById("updateEmployeeLastname").value,
+            firstName: document.getElementById("updateEmployeeFirstname").value,
+            surName: document.getElementById("updateEmployeeSurname").value,
+        };
+
+        fetch(`/api/employee/${employeeId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedEmployee),
         })
-        .catch(error => alert("Ошибка: " + error.message));
-}
+            .then(response => {
+                if (response.ok) {
+                    loadEmployees();
+                    closeEmployeeModal(document.getElementById("updateEmployeeModal"));
+                } else {
+                    alert("Ошибка при обновлении сотрудника");
+                }
+            })
+            .catch(error => console.error("Ошибка:", error));
+    });
+
+    // Обработка удаления сотрудника
+    deleteEmployeeButton.addEventListener("click", function () {
+        const deleteEmployeeModal = document.getElementById("deleteEmployeeModal");
+        deleteEmployeeModal.style.display = "block";
+    });
+
+    document.getElementById("deleteEmployeeForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const employeeId = document.getElementById("deleteEmployeeId").value;
+
+        fetch(`/api/employee/${employeeId}`, {
+            method: "DELETE",
+        })
+            .then(response => {
+                if (response.ok) {
+                    loadEmployees();
+                    closeEmployeeModal(document.getElementById("deleteEmployeeModal"));
+                } else {
+                    alert("Ошибка при удалении сотрудника");
+                }
+            })
+            .catch(error => console.error("Ошибка:", error));
+    });
+
+    // Обработка поиска сотрудников
+    searchEmployeeButton.addEventListener("click", function () {
+        searchEmployeeInput.style.display = searchEmployeeInput.style.display === "none" ? "block" : "none";
+    });
+
+    searchEmployeeInput.addEventListener("input", function () {
+        const searchTerm = searchEmployeeInput.value.toLowerCase();
+        const rows = employeesTableBody.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll("td");
+            const isVisible = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
+            row.style.display = isVisible ? "" : "none";
+        });
+    });
+
+    // Функция для загрузки всех сотрудников
+    function loadEmployees() {
+        fetch("/api/employee")
+            .then(response => response.json())
+            .then(employees => {
+                employeesTableBody.innerHTML = "";
+                employees.forEach(employee => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${employee.id}</td>
+                        <td>${employee.lastName}</td>
+                        <td>${employee.firstName}</td>
+                        <td>${employee.surName}</td>
+                    `;
+                    employeesTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Ошибка:", error));
+    }
+
+    // Функция для закрытия модального окна
+    function closeEmployeeModal(modal) {
+        modal.style.display = "none";
+    }
+
+
+    // Закрытие модальных окон при нажатии на кнопку "Закрыть"
+    document.querySelectorAll(".close").forEach(button => {
+        button.addEventListener("click", function () {
+            closeEmployeeModal(button.closest(".modal"));
+        });
+    });
+});

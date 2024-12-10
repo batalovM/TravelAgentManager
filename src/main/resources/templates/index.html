@@ -1,1030 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ru">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Управление Туристическим Агентством</title>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            font-family: Arial, sans-serif;-->
-<!--        }-->
-<!--        nav {-->
-<!--            background-color: #333;-->
-<!--            color: white;-->
-<!--            padding: 10px 15px;-->
-<!--        }-->
-<!--        ul {-->
-<!--            list-style: none;-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--        }-->
-<!--        li {-->
-<!--            display: inline-block;-->
-<!--            position: relative;-->
-<!--            margin-right: 15px;-->
-<!--        }-->
-<!--        li a {-->
-<!--            color: white;-->
-<!--            text-decoration: none;-->
-<!--            padding: 5px 10px;-->
-<!--        }-->
-<!--        li ul {-->
-<!--            display: none;-->
-<!--            position: absolute;-->
-<!--            top: 100%;-->
-<!--            left: 0;-->
-<!--            background-color: #444;-->
-<!--            padding: 10px;-->
-<!--        }-->
-<!--        li:hover ul {-->
-<!--            display: block;-->
-<!--        }-->
-<!--        .content {-->
-<!--            display: none;-->
-<!--            margin-top: 20px;-->
-<!--        }-->
-<!--        table {-->
-<!--            width: 100%;-->
-<!--            border-collapse: collapse;-->
-<!--            margin-bottom: 10px;-->
-<!--        }-->
-<!--        table, th, td {-->
-<!--            border: 1px solid #ccc;-->
-<!--        }-->
-<!--        th, td {-->
-<!--            padding: 8px;-->
-<!--            text-align: left;-->
-<!--        }-->
-<!--        .buttons {-->
-<!--            margin-bottom: 10px;-->
-<!--        }-->
-<!--        .buttons button {-->
-<!--            margin-right: 10px;-->
-<!--            padding: 5px 10px;-->
-<!--        }-->
-<!--        .modal {-->
-<!--            display: none;-->
-<!--            position: fixed;-->
-<!--            z-index: 1;-->
-<!--            left: 0;-->
-<!--            top: 0;-->
-<!--            width: 100%;-->
-<!--            height: 100%;-->
-<!--            background-color: rgba(0, 0, 0, 0.5);-->
-<!--        }-->
-<!--        .modal-content {-->
-<!--            background-color: #fff;-->
-<!--            margin: 15% auto;-->
-<!--            padding: 20px;-->
-<!--            border: 1px solid #888;-->
-<!--            width: 50%;-->
-<!--        }-->
-<!--        .close {-->
-<!--            color: #aaa;-->
-<!--            float: right;-->
-<!--            font-size: 28px;-->
-<!--            font-weight: bold;-->
-<!--        }-->
-<!--        .close:hover, .close:focus {-->
-<!--            color: black;-->
-<!--            text-decoration: none;-->
-<!--            cursor: pointer;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1>Управление Туристическим Агентством</h1>-->
-<!--<nav>-->
-<!--    <ul>-->
-<!--        <li><a href="#" onclick="showSection('clients')">Клиенты</a></li>-->
-<!--        <li><a href="#" onclick="showSection('employees')">Сотрудники</a></li>-->
-<!--        <li><a href="#" onclick="showSection('excursions')">Программы экскурсий</a></li>-->
-<!--        <li><a href="#" onclick="showSection('trips')">Поездки</a></li>-->
-<!--        <li><a href="#" onclick="showSection('groupTours')">Групповые туры</a></li>-->
-<!--        <li><a href="#" onclick="showSection('routePoints')">Маршруты по точкам</a></li>-->
-<!--        <li><a href="#">Справочники</a>-->
-<!--            <ul>-->
-<!--                <li><a href="#" onclick="showSection('routes')">Маршруты</a></li>-->
-<!--                <li><a href="#" onclick="showSection('cities')">Города</a></li>-->
-<!--                <li><a href="#" onclick="showSection('hotels')">Отели</a></li>-->
-<!--            </ul>-->
-<!--        </li>-->
-<!--        <li><a href="#" onclick="showSection('documents')">Документы</a></li>-->
-<!--        <li><a href="#">Разное</a>-->
-<!--            <ul>-->
-<!--                <li><a href="#" onclick="showSection('settings')">Настройки</a></li>-->
-<!--                <li><a href="#">Сменить пароль</a></li>-->
-<!--            </ul>-->
-<!--        </li>-->
-<!--        <li><a href="#">Справка</a>-->
-<!--            <ul>-->
-<!--                <li><a href="#" onclick="showSection('content')">Содержание</a></li>-->
-<!--                <li><a href="#" onclick="showSection('about')">О программе</a></li>-->
-<!--            </ul>-->
-<!--        </li>-->
-<!--    </ul>-->
-<!--</nav>-->
-<!--&lt;!&ndash; Клиенты &ndash;&gt;-->
-<!--<div id="clients" class="content">-->
-<!--    <h2>Клиенты</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('clientModal')">Добавить</button>-->
-<!--        <button onclick="openModal('clientUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('deleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForClients" style="display:none;">Загрузка...</div>-->
-<!--    <table id="clientsTable">-->
-
-<!--    </table>-->
-<!--    &lt;!&ndash; Пагинация &ndash;&gt;-->
-<!--    <div>-->
-<!--        <button onclick="prevPage()">Назад</button>-->
-<!--        <span id="pageNumber">1</span>-->
-<!--        <button onclick="nextPage()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для добавления клиента &ndash;&gt;-->
-<!--<div id="clientModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('clientModal')">&times;</span>-->
-<!--        <h2>Добавить Клиента</h2>-->
-<!--        <form id="addClientForm">-->
-<!--            <label for="lastname">Фамилия:</label>-->
-<!--            <input type="text" id="lastname" name="lastname" required>-->
-
-<!--            <label for="firstname">Имя:</label>-->
-<!--            <input type="text" id="firstname" name="firstname" required>-->
-
-<!--            <label for="surname">Отчество:</label>-->
-<!--            <input type="text" id="surname" name="surname" required>-->
-
-<!--            <label for="dateOfBirth">Дата Рождения:</label>-->
-<!--            <input type="date" id="dateOfBirth" name="dateOfBirth" required>-->
-
-<!--            <label for="passportSeries">Серия паспорта:</label>-->
-<!--            <input type="text" id="passportSeries" name="passportSeries" required>-->
-
-<!--            <label for="passportNumber">Номер паспорта:</label>-->
-<!--            <input type="text" id="passportNumber" name="passportNumber" required>-->
-
-<!--            <label for="dateOfIssue">Дата выдачи:</label>-->
-<!--            <input type="date" id="dateOfIssue" name="dateOfIssue" required>-->
-
-<!--            <label for="issueBy">Кем выдан:</label>-->
-<!--            <input type="text" id="issueBy" name="issueBy" required>-->
-
-<!--            <label for="photo">Фотография:</label>-->
-<!--            <input type="text" id="photo" name="photo" required>-->
-
-<!--            <button type="submit">Добавить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для обновления клиента &ndash;&gt;-->
-<!--<div id="clientUpdateModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('clientUpdateModal')">&times;</span>-->
-<!--        <h2>Обновить Клиента</h2>-->
-<!--        <form id="findClientForm">-->
-<!--            <label for="updateId">Введите ID клиента для поиска:</label>-->
-<!--            <input type="text" id="updateId" name="id" required>-->
-<!--            <button type="submit">Поиск</button>-->
-<!--        </form>-->
-<!--        <form id="updateClientForm" style="display: none;">-->
-<!--            <label for="lastname1">Фамилия:</label>-->
-<!--            <input type="text" id="lastname1" name="lastname" required>-->
-
-<!--            <label for="firstname1">Имя:</label>-->
-<!--            <input type="text" id="firstname1" name="firstname" required>-->
-
-<!--            <label for="surname1">Отчество:</label>-->
-<!--            <input type="text" id="surname1" name="surname" required>-->
-
-<!--            <label for="dateOfBirth1">Дата Рождения:</label>-->
-<!--            <input type="date" id="dateOfBirth1" name="dateOfBirth" required>-->
-
-<!--            <label for="passportSeries1">Серия паспорта:</label>-->
-<!--            <input type="text" id="passportSeries1" name="passportSeries" required>-->
-
-<!--            <label for="passportNumber1">Номер паспорта:</label>-->
-<!--            <input type="text" id="passportNumber1" name="passportNumber" required>-->
-
-<!--            <label for="dateOfIssue1">Дата выдачи:</label>-->
-<!--            <input type="date" id="dateOfIssue1" name="dateOfIssue" required>-->
-
-<!--            <label for="issueBy1">Кем выдан:</label>-->
-<!--            <input type="text" id="issueBy1" name="issueBy" required>-->
-
-<!--            <label for="photo1">Фотография:</label>-->
-<!--            <input type="text" id="photo1" name="photo" required>-->
-
-<!--            <button type="submit">Обновить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для удаления клиента &ndash;&gt;-->
-<!--<div id="deleteModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('deleteModal')">&times;</span>-->
-<!--        <h2>Удалить Клиента</h2>-->
-<!--        <form id="deleteClientForm">-->
-<!--            <label for="updateId">Введите ID клиента для удаления:</label>-->
-<!--            <input type="text" id="deleteId" name="id" required>-->
-<!--            <button type="submit">Удалить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Сотрудники &ndash;&gt;-->
-<!--<div id="employees" class="content">-->
-<!--    <h2>Сотрудники</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('employeeModal')">Добавить</button>-->
-<!--        <button onclick="openModal('employeeUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('employeeDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForEmployee" style="display:none;">Загрузка...</div>-->
-<!--    <table id="employeeTable">-->
-
-<!--    </table>-->
-<!--    &lt;!&ndash; Пагинация &ndash;&gt;-->
-<!--    <div id="paginationControls">-->
-<!--        <button onclick="prevPageEmployee()">Назад</button>-->
-<!--        <span id="pageNumberEmployee">1</span>-->
-<!--        <button onclick="nextPageEmployee()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для добавления сотрудника &ndash;&gt;-->
-<!--<div id="employeeModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('employeeModal')">&times;</span>-->
-<!--        <h2>Добавить Клиента</h2>-->
-<!--        <form id="addEmployeeForm">-->
-<!--            <label for="lastName">Фамилия:</label>-->
-<!--            <input type="text" id="employeeLastname" name="lastname" required>-->
-
-<!--            <label for="firstName">Имя:</label>-->
-<!--            <input type="text" id="employeeFirstname" name="firstname" required>-->
-
-<!--            <label for="surName">Отчество:</label>-->
-<!--            <input type="text" id="employeeSurname" name="surname" required>-->
-
-<!--            <button type="submit">Добавить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для обновления сотрудника &ndash;&gt;-->
-<!--<div id="employeeUpdateModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('clientUpdateModal')">&times;</span>-->
-<!--        <h2>Обновить Сотрудника</h2>-->
-<!--        <form id="findEmployeeForm">-->
-<!--            <label for="updateId">Введите ID сотрудника для поиска:</label>-->
-<!--            <input type="text" id="updateEmployeeId" name="id" required>-->
-<!--            <button type="submit">Поиск</button>-->
-<!--        </form>-->
-<!--        <form id="updateEmployeeForm" style="display: none;">-->
-<!--            <label for="lastname1">Фамилия:</label>-->
-<!--            <input type="text" id="employeeLastname1" name="lastname" required>-->
-
-<!--            <label for="firstname1">Имя:</label>-->
-<!--            <input type="text" id="employeeFirstname1" name="firstname" required>-->
-
-<!--            <label for="surname1">Отчество:</label>-->
-<!--            <input type="text" id="employeeSurname1" name="surname" required>-->
-<!--            <button type="submit">Обновить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для удаления сотрудника &ndash;&gt;-->
-<!--<div id="employeeDeleteModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('deleteModal')">&times;</span>-->
-<!--        <h2>Удалить Клиента</h2>-->
-<!--        <form id="deleteEmployeeForm">-->
-<!--            <label for="updateId">Введите ID сотрудника для удаления:</label>-->
-<!--            <input type="text" id="" name="id" required>-->
-<!--            <button type="submit">Удалить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Программы экскурсий &ndash;&gt;-->
-<!--<div id="excursions" class="content" style="display:none;">-->
-<!--    <h2>Программы экскурсий</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('excursionModal')">Добавить</button>-->
-<!--        <button onclick="openModal('excursionUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('excursionDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForExcursions" style="display:none;">Загрузка...</div>-->
-<!--    <table id="excursionsTable"></table>-->
-<!--    <div>-->
-<!--        <button onclick="prevPageExcursion()">Назад</button>-->
-<!--        <span id="pageNumberExcursion">1</span>-->
-<!--        <button onclick="nextPageExcursion()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для добавления Программы экскурсий &ndash;&gt;-->
-<!--<div id="excursionModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('excursionModal')">&times;</span>-->
-<!--        <h2>Добавить Программу экскурсии</h2>-->
-<!--        <form id="addExcursionForm">-->
-<!--            <label for="excursionName">Название:</label>-->
-<!--            <input type="text" id="excursionName" name="name" required>-->
-
-<!--            <label for="excursionDescription">Описание:</label>-->
-<!--            <textarea id="excursionDescription" name="description" required></textarea>-->
-
-<!--            <label for="excursionDate">Дата проведения:</label>-->
-<!--            <input type="date" id="excursionDate" name="date" required>-->
-
-<!--            <label for="excursionDuration">Продолжительность (часы):</label>-->
-<!--            <input type="number" id="excursionDuration" name="duration" required>-->
-
-<!--            <label for="excursionGuide">Гид:</label>-->
-<!--            <input type="text" id="excursionGuide" name="guide" required>-->
-
-<!--            <button type="submit">Добавить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для обновления Программы экскурсий &ndash;&gt;-->
-<!--<div id="excursionUpdateModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('excursionUpdateModal')">&times;</span>-->
-<!--        <h2>Обновить Программу экскурсии</h2>-->
-<!--        <form id="findExcursionForm">-->
-<!--            <label for="updateExcursionId">Введите ID программы для поиска:</label>-->
-<!--            <input type="text" id="updateExcursionId" name="id" required>-->
-<!--            <button type="submit">Поиск</button>-->
-<!--        </form>-->
-<!--        <form id="updateExcursionForm" style="display: none;">-->
-<!--            <label for="excursionNameUpdate">Название:</label>-->
-<!--            <input type="text" id="excursionNameUpdate" name="name" required>-->
-
-<!--            <label for="excursionDescriptionUpdate">Описание:</label>-->
-<!--            <textarea id="excursionDescriptionUpdate" name="description" required></textarea>-->
-
-<!--            <label for="excursionDateUpdate">Дата проведения:</label>-->
-<!--            <input type="date" id="excursionDateUpdate" name="date" required>-->
-
-<!--            <label for="excursionDurationUpdate">Продолжительность (часы):</label>-->
-<!--            <input type="number" id="excursionDurationUpdate" name="duration" required>-->
-
-<!--            <label for="excursionGuideUpdate">Гид:</label>-->
-<!--            <input type="text" id="excursionGuideUpdate" name="guide" required>-->
-
-<!--            <button type="submit">Обновить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для удаления Программы экскурсий &ndash;&gt;-->
-<!--<div id="excursionDeleteModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('excursionDeleteModal')">&times;</span>-->
-<!--        <h2>Удалить Программу экскурсии</h2>-->
-<!--        <form id="deleteExcursionForm">-->
-<!--            <label for="deleteExcursionId">Введите ID программы для удаления:</label>-->
-<!--            <input type="text" id="deleteExcursionId" name="id" required>-->
-<!--            <button type="submit">Удалить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Поездки &ndash;&gt;-->
-<!--<div id="trips" class="content" style="display:none;">-->
-<!--    <h2>Поездки</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('tripModal')">Добавить</button>-->
-<!--        <button onclick="openModal('tripUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('tripDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForTrips" style="display:none;">Загрузка...</div>-->
-<!--    <table id="tripsTable"></table>-->
-<!--    <div>-->
-<!--        <button onclick="prevPageTrip()">Назад</button>-->
-<!--        <span id="pageNumberTrip">1</span>-->
-<!--        <button onclick="nextPageTrip()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Групповые туры &ndash;&gt;-->
-<!--<div id="groupTours" class="content" style="display:none;">-->
-<!--    <h2>Групповые туры</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('groupTourModal')">Добавить</button>-->
-<!--        <button onclick="openModal('groupTourUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('groupTourDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForGroupTours" style="display:none;">Загрузка...</div>-->
-<!--    <table id="groupToursTable"></table>-->
-<!--    <div>-->
-<!--        <button onclick="prevPageGroupTour()">Назад</button>-->
-<!--        <span id="pageNumberGroupTour">1</span>-->
-<!--        <button onclick="nextPageGroupTour()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Маршруты по точкам &ndash;&gt;-->
-<!--<div id="routePoints" class="content" style="display:none;">-->
-<!--    <h2>Маршруты по точкам</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('routePointModal')">Добавить</button>-->
-<!--        <button onclick="openModal('routePointUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('routePointDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForRoutePoints" style="display:none;">Загрузка...</div>-->
-<!--    <table id="routePointsTable"></table>-->
-<!--    <div>-->
-<!--        <button onclick="prevPageRoutePoint()">Назад</button>-->
-<!--        <span id="pageNumberRoutePoint">1</span>-->
-<!--        <button onclick="nextPageRoutePoint()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-
-<!--&lt;!&ndash; Маршруты &ndash;&gt;-->
-<!--<div id="routes" class="content">-->
-<!--    <h2>Маршруты</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('routeModal')">Добавить</button>-->
-<!--        <button onclick="openModal('routeUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('routeDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForRoute" style="display:none;">Загрузка...</div>-->
-<!--    <table id="routeTable">-->
-
-<!--    </table>-->
-<!--    &lt;!&ndash; Пагинация &ndash;&gt;-->
-<!--    <div>-->
-<!--        <button onclick="prevPageRoute()">Назад</button>-->
-<!--        <span id="pageNumberRoute">1</span>-->
-<!--        <button onclick="nextPageRoute()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для добавления маршрута &ndash;&gt;-->
-<!--<div id="routeModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('employeeModal')">&times;</span>-->
-<!--        <h2>Добавить Клиента</h2>-->
-<!--        <form id="addRouteForm">-->
-<!--            <button type="submit">Добавить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для обновления маршрута &ndash;&gt;-->
-<!--<div id="routeUpdateModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('clientUpdateModal')">&times;</span>-->
-<!--        <h2>Обновить Сотрудника</h2>-->
-<!--        <form id="findRouteForm">-->
-<!--            <label for="updateId">Введите ID маршрута для поиска:</label>-->
-<!--            <input type="text" id="updateRouteId" name="id" required>-->
-<!--            <button type="submit">Поиск</button>-->
-<!--        </form>-->
-<!--        <form id="updateRouteForm" style="display: none;">-->
-<!--            <button type="submit">Обновить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; Модальное окно для удаления маршрута &ndash;&gt;-->
-<!--<div id="routeDeleteModal" class="modal">-->
-<!--    <div class="modal-content">-->
-<!--        <span class="close" onclick="closeModal('deleteModal')">&times;</span>-->
-<!--        <h2>Удалить Клиента</h2>-->
-<!--        <form id="deleteRouteForm">-->
-<!--            <label for="updateId">Введите ID  для удаления:</label>-->
-<!--            <input type="text" id="deleteRouteId" name="id" required>-->
-<!--            <button type="submit">Удалить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Города &ndash;&gt;-->
-<!--<div id="cities" class="content" style="display:none;">-->
-<!--    <h2>Города</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('cityModal')">Добавить</button>-->
-<!--        <button onclick="openModal('cityUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('cityDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForCities" style="display:none;">Загрузка...</div>-->
-<!--    <table id="citiesTable"></table>-->
-<!--    <div>-->
-<!--        <button onclick="prevPageCity()">Назад</button>-->
-<!--        <span id="pageNumberCity">1</span>-->
-<!--        <button onclick="nextPageCity()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Отели &ndash;&gt;-->
-<!--<div id="hotels" class="content" style="display:none;">-->
-<!--    <h2>Отели</h2>-->
-<!--    <div class="buttons">-->
-<!--        <button onclick="openModal('hotelModal')">Добавить</button>-->
-<!--        <button onclick="openModal('hotelUpdateModal')">Обновить</button>-->
-<!--        <button onclick="openModal('hotelDeleteModal')">Удалить</button>-->
-<!--    </div>-->
-<!--    <div id="loadingSpinnerForHotels" style="display:none;">Загрузка...</div>-->
-<!--    <table id="hotelsTable"></table>-->
-<!--    <div>-->
-<!--        <button onclick="prevPageHotel()">Назад</button>-->
-<!--        <span id="pageNumberHotel">1</span>-->
-<!--        <button onclick="nextPageHotel()">Вперед</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Содержание &ndash;&gt;-->
-<!--<div id="content" class="content" style="display:none;">-->
-<!--    <h2>Содержание</h2>-->
-<!--    <p>Здесь будет отображено содержание справки.</p>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; О программе &ndash;&gt;-->
-<!--<div id="about" class="content" style="display:none;">-->
-<!--    <h2>О программе</h2>-->
-<!--    <p>Информация о программе: версия 1.0.0, разработчик: Ваша компания.</p>-->
-<!--</div>-->
-
-<!--<div id="documents" class="content" style="display:none;">-->
-<!--<div id="sqlInterface" class="hidden sql-container">-->
-<!--    <textarea id="sqlQuery" placeholder="Введите SQL-запрос..."></textarea>-->
-<!--    <button onclick="executeSQLQuery()">Ввести</button>-->
-<!--    <table id="resultsTable" class="hidden">-->
-<!--        <thead>-->
-<!--        <tr id="tableHeaders">-->
-<!--            &lt;!&ndash; Заголовки будут добавляться динамически &ndash;&gt;-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        &lt;!&ndash; Результаты запроса &ndash;&gt;-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
-<!--</div>-->
-
-
-
-<!--<script>-->
-<!--    function showSection(sectionId) {-->
-<!--        const sections = document.querySelectorAll('.content');-->
-<!--        sections.forEach(section => section.style.display = 'none');-->
-<!--        document.getElementById(sectionId).style.display = 'block';-->
-<!--        if (sectionId === 'clients') {-->
-<!--            loadClientsScript();-->
-<!--        }-->
-<!--        if (sectionId === 'employees') {-->
-<!--            loadEmployeesScript();-->
-<!--        }-->
-<!--        if (sectionId === 'routes') {-->
-<!--            loadRoutesScript();-->
-<!--        }-->
-<!--        if (sectionId === 'cities') {-->
-<!--            loadCitiesScript();-->
-<!--        }-->
-<!--        if (sectionId === 'hotels') {-->
-<!--            loadHotelsScript();-->
-<!--        }-->
-<!--        if (sectionId === 'excursions') {-->
-<!--            loadExcursionsScript();-->
-<!--        }-->
-<!--        if (sectionId === 'documents') {-->
-<!--            toggleSQLInterface();-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Функция для динамической загрузки скрипта для работы с клиентами-->
-<!--    function loadClientsScript() {-->
-<!--        import('./client.js')-->
-<!--            .then((module) => {-->
-<!--                const loadingSpinner = document.getElementById("loadingSpinnerForClients");-->
-<!--                const tableBody = document.querySelector("#clientsTable");-->
-<!--                module.loadClients(5, 1, loadingSpinner, tableBody, []);-->
-<!--                document.getElementById("findClientForm").addEventListener("submit", module.findClientById);-->
-<!--                document.getElementById('addClientForm').addEventListener('submit', module.addClient);-->
-<!--                document.getElementById('updateClientForm').addEventListener('submit', module.updateClient);-->
-<!--                document.getElementById('deleteClientForm').addEventListener('submit', module.deleteClient);-->
-<!--            })-->
-<!--            .catch(err => console.error('Ошибка загрузки скрипта для клиентов:', err));-->
-<!--    }-->
-<!--    function loadEmployeesScript() {-->
-<!--        import('./employee.js')-->
-<!--            .then((module) => {-->
-<!--                const loadingSpinner = document.getElementById("loadingSpinnerForEmployee");-->
-<!--                const tableBody = document.querySelector("#employeeTable");-->
-<!--                module.loadEmployees(5, 1, loadingSpinner, tableBody, []);-->
-<!--                document.getElementById("findEmployeeForm").addEventListener("submit", module.findEmployeeById);-->
-<!--                document.getElementById('addEmployeeForm').addEventListener('submit', module.addEmployee);-->
-<!--                document.getElementById('updateEmployeeForm').addEventListener('submit', module.updateEmployee);-->
-<!--                document.getElementById('deleteEmployeeForm').addEventListener('submit', module.deleteEmployee);-->
-<!--            })-->
-<!--            .catch(err => console.error('Ошибка загрузки скрипта для сотрудников:', err));-->
-<!--    }-->
-<!--    function loadRoutesScript() {-->
-<!--        import('./routes.js')-->
-<!--            .then((module) => {-->
-<!--                const loadingSpinner = document.getElementById("loadingSpinnerForRoute");-->
-<!--                const tableBody = document.querySelector("#routeTable");-->
-<!--                module.loadRoutes(5, 1, loadingSpinner, tableBody, []);-->
-<!--                document.getElementById("findRouteForm").addEventListener("submit", module.findRouteById);-->
-<!--                document.getElementById('addRouteForm').addEventListener('submit', module.addRoute);-->
-<!--                document.getElementById('updateRouteForm').addEventListener('submit', module.updateRoute);-->
-<!--                document.getElementById('deleteRouteForm').addEventListener('submit', module.deleteRoute);-->
-<!--            })-->
-<!--            .catch(err => console.error('Ошибка загрузки скрипта для маршрутов:', err));-->
-<!--    }-->
-<!--    function loadCitiesScript() {-->
-<!--        import('./cities.js')-->
-<!--            .then((module) => {-->
-<!--                const loadingSpinner = document.getElementById("loadingSpinnerForCities");-->
-<!--                const tableBody = document.querySelector("#citiesTable");-->
-<!--                module.loadCities(5, 1, loadingSpinner, tableBody, []);-->
-<!--                document.getElementById("findCitiesForm").addEventListener("submit", module.findCitiesById);-->
-<!--                document.getElementById('addCitiesForm').addEventListener('submit', module.addCities);-->
-<!--                document.getElementById('updateCitiesForm').addEventListener('submit', module.updateCities);-->
-<!--                document.getElementById('deleteCitiesForm').addEventListener('submit', module.deleteCities);-->
-<!--            })-->
-<!--            .catch(err => console.error('Ошибка загрузки скрипта для городов:', err));-->
-<!--    }-->
-<!--    function loadHotelsScript() {-->
-<!--        import('./hotels.js')-->
-<!--            .then((module) => {-->
-<!--                const loadingSpinner = document.getElementById("loadingSpinnerForHotels");-->
-<!--                const tableBody = document.querySelector("#hotelsTable");-->
-<!--                module.loadHotels(5, 1, loadingSpinner, tableBody, []);-->
-<!--                document.getElementById("findHotelsForm").addEventListener("submit", module.findHotelsById);-->
-<!--                document.getElementById('addEmployeeForm').addEventListener('submit', module.addHotels);-->
-<!--                document.getElementById('updateEmployeeForm').addEventListener('submit', module.updateHotels);-->
-<!--                document.getElementById('deleteClientForm').addEventListener('submit', module.deleteHotels);-->
-<!--            })-->
-<!--            .catch(err => console.error('Ошибка загрузки скрипта для отелей:', err));-->
-<!--    }-->
-<!--    function loadExcursionsScript() {-->
-<!--        import('./excursions.js')-->
-<!--            .then((module) => {-->
-<!--                const loadingSpinner = document.getElementById("loadingSpinnerForExcursions");-->
-<!--                const tableBody = document.querySelector("#excursionsTable");-->
-<!--                module.loadExcursions(5, 1, loadingSpinner, tableBody, []);-->
-<!--                document.getElementById("findExcursionForm").addEventListener("submit", module.findExcursionById);-->
-<!--                document.getElementById('addExcursionForm').addEventListener('submit', module.addExcursion);-->
-<!--                document.getElementById('updateExcursionForm').addEventListener('submit', module.updateExcursion);-->
-<!--                document.getElementById('deleteExcursionForm').addEventListener('submit', module.deleteExcursion);-->
-<!--            })-->
-<!--            .catch(err => console.error('Ошибка загрузки скрипта для экскурсионной программы:', err));-->
-<!--    }-->
-
-<!--    function openModal(modalId) {-->
-<!--        document.getElementById(modalId).style.display = "block";-->
-<!--    }-->
-
-<!--    function closeModal(modalId) {-->
-<!--        document.getElementById(modalId).style.display = "none";-->
-<!--    }-->
-
-<!--    window.onclick = function (event) {-->
-<!--        const modals = document.getElementsByClassName('modal');-->
-<!--        for (let i = 0; i < modals.length; i++) {-->
-<!--            if (event.target === modals[i]) {-->
-<!--                modals[i].style.display = "none";-->
-<!--            }-->
-<!--        }-->
-<!--    };-->
-
-
-<!--    // Показать/скрыть интерфейс SQL-запросов-->
-<!--    function toggleSQLInterface() {-->
-<!--        const sqlInterface = document.getElementById("sqlInterface");-->
-<!--        sqlInterface.classList.toggle("hidden");-->
-<!--    }-->
-
-<!--    // Выполнение SQL-запроса-->
-<!--    async function executeSQLQuery() {-->
-<!--        const query = document.getElementById("sqlQuery").value;-->
-
-<!--        try {-->
-<!--            // Отправка запроса на сервер-->
-<!--            const response = await fetch('/api/execute-sql', {-->
-<!--                method: 'POST',-->
-<!--                headers: {-->
-<!--                    'Content-Type': 'application/json'-->
-<!--                },-->
-<!--                body: JSON.stringify({ sql: query })-->
-<!--            });-->
-
-<!--            if (!response.ok) {-->
-<!--                throw new Error('Ошибка при выполнении запроса');-->
-<!--            }-->
-
-<!--            const data = await response.json();-->
-<!--            renderResultsTable(data);-->
-<!--        } catch (error) {-->
-<!--            alert('Ошибка: ' + error.message);-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Отображение результатов в таблице-->
-<!--    function renderResultsTable(data) {-->
-<!--        const table = document.getElementById("resultsTable");-->
-<!--        const tableHeaders = document.getElementById("tableHeaders");-->
-<!--        const tableBody = table.querySelector("tbody");-->
-
-<!--        // Очистка таблицы-->
-<!--        tableHeaders.innerHTML = '';-->
-<!--        tableBody.innerHTML = '';-->
-
-<!--        if (data.length === 0) {-->
-<!--            alert("Нет результатов");-->
-<!--            return;-->
-<!--        }-->
-
-<!--        // Добавление заголовков-->
-<!--        Object.keys(data[0]).forEach(key => {-->
-<!--            const th = document.createElement("th");-->
-<!--            th.textContent = key;-->
-<!--            tableHeaders.appendChild(th);-->
-<!--        });-->
-
-<!--        // Добавление строк-->
-<!--        data.forEach(row => {-->
-<!--            const tr = document.createElement("tr");-->
-<!--            Object.values(row).forEach(value => {-->
-<!--                const td = document.createElement("td");-->
-<!--                td.textContent = value;-->
-<!--                tr.appendChild(td);-->
-<!--            });-->
-<!--            tableBody.appendChild(tr);-->
-<!--        });-->
-
-<!--        table.classList.remove("hidden");-->
-<!--    }-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Управление Туристическим Агентством</title>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            font-family: Arial, sans-serif;-->
-<!--            margin: 20px;-->
-<!--        }-->
-<!--        h1 {-->
-<!--            text-align: center;-->
-<!--        }-->
-<!--        table {-->
-<!--            width: 100%;-->
-<!--            border-collapse: collapse;-->
-<!--            margin-top: 20px;-->
-<!--        }-->
-<!--        table, th, td {-->
-<!--            border: 1px solid black;-->
-<!--        }-->
-<!--        th, td {-->
-<!--            padding: 10px;-->
-<!--            text-align: left;-->
-<!--        }-->
-<!--        .buttons {-->
-<!--            margin-bottom: 20px;-->
-<!--        }-->
-<!--        .buttons button {-->
-<!--            margin-right: 10px;-->
-<!--        }-->
-<!--        .modal {-->
-<!--            display: none;-->
-<!--            position: fixed;-->
-<!--            top: 50%;-->
-<!--            left: 50%;-->
-<!--            transform: translate(-50%, -50%);-->
-<!--            background: white;-->
-<!--            padding: 20px;-->
-<!--            border: 1px solid black;-->
-<!--            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);-->
-<!--            z-index: 1000;-->
-<!--        }-->
-<!--        .modal.active {-->
-<!--            display: block;-->
-<!--        }-->
-<!--        .modal input {-->
-<!--            margin-bottom: 10px;-->
-<!--            display: block;-->
-<!--        }-->
-<!--        .overlay {-->
-<!--            display: none;-->
-<!--            position: fixed;-->
-<!--            top: 0;-->
-<!--            left: 0;-->
-<!--            width: 100%;-->
-<!--            height: 100%;-->
-<!--            background: rgba(0, 0, 0, 0.5);-->
-<!--            z-index: 999;-->
-<!--        }-->
-<!--        .overlay.active {-->
-<!--            display: block;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<h1>Управление Туристическим Агентством</h1>-->
-
-<!--<div class="buttons">-->
-<!--    <button id="addButton">Добавить</button>-->
-<!--    <button id="updateButton">Обновить</button>-->
-<!--    <button id="deleteButton">Удалить</button>-->
-<!--    <button id="searchButton">Поиск</button>-->
-<!--    <input type="text" id="searchInput" placeholder="Введите текст для поиска" style="display: none;">-->
-<!--</div>-->
-
-<!--<table id="clientsTable">-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Фамилия</th>-->
-<!--        <th>Имя</th>-->
-<!--        <th>Отчество</th>-->
-<!--        <th>Дата рождения</th>-->
-<!--        <th>Серия паспорта</th>-->
-<!--        <th>Номер паспорта</th>-->
-<!--        <th>Дата выдачи</th>-->
-<!--        <th>Кем выдан</th>-->
-<!--        <th>Фото</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    </tbody>-->
-<!--</table>-->
-
-<!--<div class="overlay" id="overlay"></div>-->
-
-<!--&lt;!&ndash; Модальное окно для добавления &ndash;&gt;-->
-<!--<div class="modal" id="addModal">-->
-<!--    <h2>Добавить клиента</h2>-->
-<!--    <form id="addForm">-->
-<!--        <input type="text" id="addLastname" placeholder="Фамилия" required>-->
-<!--        <input type="text" id="addFirstname" placeholder="Имя" required>-->
-<!--        <input type="text" id="addSurname" placeholder="Отчество">-->
-<!--        <input type="date" id="addDateOfBirth" required>-->
-<!--        <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required>-->
-<!--        <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required>-->
-<!--        <input type="date" id="addDateOfIssue" required>-->
-<!--        <input type="text" id="addIssueBy" placeholder="Кем выдан" required>-->
-<!--        <input type="text" id="addPhoto" placeholder="Фото">-->
-<!--        <button type="submit">Добавить</button>-->
-<!--    </form>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Модальное окно для обновления &ndash;&gt;-->
-<!--<div class="modal" id="updateModal">-->
-<!--    <h2>Обновить клиента</h2>-->
-<!--    <div id="step1">-->
-<!--        <form id="fetchClientForm">-->
-<!--            <input type="number" id="fetchClientId" placeholder="Введите ID клиента" required>-->
-<!--            <button type="submit">Загрузить данные</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--    <div id="step2" style="display: none;">-->
-<!--        <form id="updateForm">-->
-<!--            <input type="text" id="updateLastname" placeholder="Фамилия">-->
-<!--            <input type="text" id="updateFirstname" placeholder="Имя">-->
-<!--            <input type="text" id="updateSurname" placeholder="Отчество">-->
-<!--            <input type="date" id="updateDateOfBirth">-->
-<!--            <input type="text" id="updatePassportSeries" placeholder="Серия паспорта">-->
-<!--            <input type="text" id="updatePassportNumber" placeholder="Номер паспорта">-->
-<!--            <input type="date" id="updateDateOfIssue">-->
-<!--            <input type="text" id="updateIssueBy" placeholder="Кем выдан">-->
-<!--            <input type="text" id="updatePhoto" placeholder="Фото">-->
-<!--            <button type="submit">Обновить</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Модальное окно для удаления &ndash;&gt;-->
-<!--<div class="modal" id="deleteModal">-->
-<!--    <h2>Удалить клиента</h2>-->
-<!--    <form id="deleteForm">-->
-<!--        <input type="number" id="deleteId" placeholder="ID клиента" required>-->
-<!--        <button type="submit">Удалить</button>-->
-<!--    </form>-->
-<!--</div>-->
-
-
-
-<!--<script>-->
-<!--    const apiUrl = "http://localhost:8080/api/clients";-->
-
-<!--    const overlay = document.querySelector("#overlay");-->
-<!--    const updateModal = document.querySelector("#updateModal");-->
-<!--    const step1 = document.querySelector("#step1");-->
-<!--    const step2 = document.querySelector("#step2");-->
-
-<!--    // Открытие и закрытие модальных окон-->
-<!--    function openModal(modal) {-->
-<!--        modal.classList.add("active");-->
-<!--        overlay.classList.add("active");-->
-<!--    }-->
-
-<!--    function closeModal() {-->
-<!--        document.querySelectorAll(".modal").forEach(modal => modal.classList.remove("active"));-->
-<!--        overlay.classList.remove("active");-->
-<!--        step1.style.display = "block";-->
-<!--        step2.style.display = "none";-->
-<!--    }-->
-
-<!--    overlay.addEventListener("click", closeModal);-->
-
-<!--    // Функционал для кнопки обновления-->
-<!--    document.querySelector("#updateButton").addEventListener("click", () => openModal(updateModal));-->
-
-<!--    // Загрузка данных клиента для обновления-->
-<!--    document.querySelector("#fetchClientForm").addEventListener("submit", async (e) => {-->
-<!--        e.preventDefault();-->
-<!--        const id = document.querySelector("#fetchClientId").value;-->
-<!--        const response = await fetch(`${apiUrl}/${id}`);-->
-<!--        if (response.ok) {-->
-<!--            const client = await response.json();-->
-<!--            // Заполняем поля данными клиента-->
-<!--            document.querySelector("#updateLastname").value = client.lastname || "";-->
-<!--            document.querySelector("#updateFirstname").value = client.firstname || "";-->
-<!--            document.querySelector("#updateSurname").value = client.surname || "";-->
-<!--            document.querySelector("#updateDateOfBirth").value = client.dateOfBirth || "";-->
-<!--            document.querySelector("#updatePassportSeries").value = client.passportSeries || "";-->
-<!--            document.querySelector("#updatePassportNumber").value = client.passportNumber || "";-->
-<!--            document.querySelector("#updateDateOfIssue").value = client.dateOfIssue || "";-->
-<!--            document.querySelector("#updateIssueBy").value = client.issueBy || "";-->
-<!--            document.querySelector("#updatePhoto").value = client.photo || "";-->
-
-<!--            // Переход ко второму шагу-->
-<!--            step1.style.display = "none";-->
-<!--            step2.style.display = "block";-->
-<!--        } else {-->
-<!--            alert("Клиент с таким ID не найден!");-->
-<!--        }-->
-<!--    });-->
-
-<!--    // Отправка обновлённых данных клиента-->
-<!--    document.querySelector("#updateForm").addEventListener("submit", async (e) => {-->
-<!--        e.preventDefault();-->
-<!--        const id = document.querySelector("#fetchClientId").value;-->
-<!--        const client = {-->
-<!--            lastname: document.querySelector("#updateLastname").value || null,-->
-<!--            firstname: document.querySelector("#updateFirstname").value || null,-->
-<!--            surname: document.querySelector("#updateSurname").value || null,-->
-<!--            dateOfBirth: document.querySelector("#updateDateOfBirth").value || null,-->
-<!--            passportSeries: document.querySelector("#updatePassportSeries").value || null,-->
-<!--            passportNumber: document.querySelector("#updatePassportNumber").value || null,-->
-<!--            dateOfIssue: document.querySelector("#updateDateOfIssue").value || null,-->
-<!--            issueBy: document.querySelector("#updateIssueBy").value || null,-->
-<!--            photo: document.querySelector("#updatePhoto").value || null,-->
-<!--        };-->
-<!--        await fetch(`${apiUrl}/${id}`, {-->
-<!--            method: "PUT",-->
-<!--            headers: { "Content-Type": "application/json" },-->
-<!--            body: JSON.stringify(client),-->
-<!--        });-->
-<!--        closeModal();-->
-<!--        loadClients();-->
-<!--    });-->
-
-<!--    // Загрузка всех клиентов (остальной код не меняется)-->
-<!--    async function loadClients() {-->
-<!--        const response = await fetch(apiUrl);-->
-<!--        const clients = await response.json();-->
-<!--        renderClients(clients);-->
-<!--    }-->
-
-<!--    function renderClients(clients) {-->
-<!--        const tableBody = document.querySelector("#clientsTable tbody");-->
-<!--        tableBody.innerHTML = "";-->
-<!--        clients.forEach(client => {-->
-<!--            const row = document.createElement("tr");-->
-<!--            row.innerHTML = `-->
-<!--                <td>${client.id}</td>-->
-<!--                <td>${client.lastname}</td>-->
-<!--                <td>${client.firstname}</td>-->
-<!--                <td>${client.surname}</td>-->
-<!--                <td>${client.dateOfBirth}</td>-->
-<!--                <td>${client.passportSeries}</td>-->
-<!--                <td>${client.passportNumber}</td>-->
-<!--                <td>${client.dateOfIssue}</td>-->
-<!--                <td>${client.issueBy}</td>-->
-<!--                <td>${client.photo}</td>-->
-<!--            `;-->
-<!--            tableBody.appendChild(row);-->
-<!--        });-->
-<!--    }-->
-
-<!--    // Инициализация-->
-<!--    loadClients();-->
-<!--</script>-->
-
-
-<!--</body>-->
-<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1145,46 +118,48 @@
 
 <nav>
     <ul>
-        <li><a href="#" onclick="showSection('clients')">Клиенты</a></li>
-        <li><a href="#" onclick="showSection('employees')">Сотрудники</a></li>
-        <li><a href="#" onclick="showSection('excursions')">Программы экскурсий</a></li>
-        <li><a href="#" onclick="showSection('trips')">Поездки</a></li>
-        <li><a href="#" onclick="showSection('groupTours')">Групповые туры</a></li>
-        <li><a href="#" onclick="showSection('routePoints')">Маршруты по точкам</a></li>
+        <li><a href="#" onclick="showSection('clientsSection')">Клиенты</a></li>
+        <li><a href="#" onclick="showSection('employeesSection')">Сотрудники</a></li>
+        <li><a href="#" onclick="showSection('excursionProgramSection')">Программы экскурсий</a></li>
+        <li><a href="#" onclick="showSection('tripSection')">Поездки</a></li>
         <li><a href="#">Справочники</a>
             <ul>
-                <li><a href="#" onclick="showSection('routes')">Маршруты</a></li>
-                <li><a href="#" onclick="showSection('cities')">Города</a></li>
-                <li><a href="#" onclick="showSection('hotels')">Отели</a></li>
+                <li><a href="#" onclick="showSection('routeSection')">Маршруты</a></li>
+                <li><a href="#" onclick="showSection('citySection')">Города</a></li>
+                <li><a href="#" onclick="showSection('hotelSection')">Отели</a></li>
             </ul>
         </li>
-        <li><a href="#" onclick="showSection('documents')">Документы</a></li>
+        <li><a href="#" onclick="showSection('documentsSection')">Документы</a></li>
         <li><a href="#">Разное</a>
             <ul>
-                <li><a href="#" onclick="showSection('settings')">Настройки</a></li>
-                <li><a href="#">Сменить пароль</a></li>
+                <li><a href="#" onclick="showSection('settingsSection')">Настройки</a></li>
+                <li><a href="#" onclick="showSection('changePasswordSection')">Сменить пароль</a></li>
             </ul>
         </li>
         <li><a href="#">Справка</a>
             <ul>
-                <li><a href="#" onclick="showSection('content')">Содержание</a></li>
-                <li><a href="#" onclick="showSection('about')">О программе</a></li>
+                <li><a href="#" onclick="showSection('contentSection')">Содержание</a></li>
+                <li><a href="#" onclick="showSection('aboutSection')">О программе</a></li>
             </ul>
         </li>
     </ul>
 </nav>
 
 <!-- Секция клиентов -->
-<div class="section active" id="clientsSection">
+<section class="section active" id="clientsSection" aria-labelledby="clientsSectionTitle">
+    <header>
+        <h2 id="clientsSectionTitle">Управление клиентами</h2>
+    </header>
     <div class="buttons">
-        <button id="addButton">Добавить</button>
-        <button id="updateButton">Обновить</button>
-        <button id="deleteButton">Удалить</button>
-        <button id="searchButton">Поиск</button>
-        <input type="text" id="searchInput" placeholder="Введите текст для поиска" style="display: none;">
+        <button id="addButton" onclick="openModal('addModal')"  aria-label="Добавить клиента">Добавить</button>
+        <button id="updateButton" onclick="openModal('updateModal')" aria-label="Обновить клиента">Обновить</button>
+        <button id="deleteButton" onclick="openModal('deleteModal')" aria-label="Удалить клиента">Удалить</button>
+        <button id="searchButton" aria-label="Поиск клиента">Поиск</button>
+        <input type="text" id="searchInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
     </div>
 
-    <table id="clientsTable">
+    <table id="clientsTable" aria-describedby="clientsTableDesc">
+        <caption id="clientsTableDesc">Список клиентов</caption>
         <thead>
         <tr>
             <th>ID</th>
@@ -1200,222 +175,764 @@
         </tr>
         </thead>
         <tbody>
+        <!-- Данные клиентов будут загружены здесь -->
         </tbody>
     </table>
 
-    <div class="overlay" id="overlay"></div>
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
 
     <!-- Модальное окно для добавления -->
-    <div class="modal" id="addModal">
-        <h2>Добавить клиента</h2>
-        <form id="addForm">
-            <input type="text" id="addLastname" placeholder="Фамилия" required>
-            <input type="text" id="addFirstname" placeholder="Имя" required>
-            <input type="text" id="addSurname" placeholder="Отчество">
-            <input type="date" id="addDateOfBirth" required>
-            <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required>
-            <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required>
-            <input type="date" id="addDateOfIssue" required>
-            <input type="text" id="addIssueBy" placeholder="Кем выдан" required>
-            <input type="text" id="addPhoto" placeholder="Фото">
-            <button type="submit">Добавить</button>
+    <div class="modal" id="addModal" role="dialog" aria-labelledby="addModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addModalTitle">Добавить клиента</h2>
+        <form id="addForm" novalidate>
+            <fieldset>
+                <legend>Данные клиента</legend>
+                <input type="text" id="addLastname" placeholder="Фамилия" required>
+                <input type="text" id="addFirstname" placeholder="Имя" required>
+                <input type="text" id="addSurname" placeholder="Отчество">
+                <input type="date" id="addDateOfBirth" required>
+                <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required pattern="\d{4}">
+                <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required pattern="\d{6}">
+                <input type="date" id="addDateOfIssue" required>
+                <input type="text" id="addIssueBy" placeholder="Кем выдан" required>
+                <input type="text" id="addPhoto" placeholder="Фото">
+                <button type="submit">Добавить</button>
+            </fieldset>
         </form>
     </div>
 
     <!-- Модальное окно для обновления -->
-    <div class="modal" id="updateModal">
-        <h2>Обновить клиента</h2>
+    <div class="modal" id="updateModal" role="dialog" aria-labelledby="updateModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateModalTitle">Обновить клиента</h2>
         <div id="step1">
-            <form id="fetchClientForm">
+            <form id="fetchClientForm" novalidate>
                 <input type="number" id="fetchClientId" placeholder="Введите ID клиента" required>
                 <button type="submit">Загрузить данные</button>
             </form>
         </div>
         <div id="step2" style="display: none;">
-            <form id="updateForm">
-                <input type="text" id="updateLastname" placeholder="Фамилия">
-                <input type="text" id="updateFirstname" placeholder="Имя">
-                <input type="text" id="updateSurname" placeholder="Отчество">
-                <input type="date" id="updateDateOfBirth">
-                <input type="text" id="updatePassportSeries" placeholder="Серия паспорта">
-                <input type="text" id="updatePassportNumber" placeholder="Номер паспорта">
-                <input type="date" id="updateDateOfIssue">
-                <input type="text" id="updateIssueBy" placeholder="Кем выдан">
-                <input type="text" id="updatePhoto" placeholder="Фото">
-                <button type="submit">Обновить</button>
+            <form id="updateForm" novalidate>
+                <fieldset>
+                    <legend>Данные клиента</legend>
+                    <input type="text" id="updateLastname" placeholder="Фамилия">
+                    <input type="text" id="updateFirstname" placeholder="Имя">
+                    <input type="text" id="updateSurname" placeholder="Отчество">
+                    <input type="date" id="updateDateOfBirth">
+                    <input type="text" id="updatePassportSeries" placeholder="Серия паспорта">
+                    <input type="text" id="updatePassportNumber" placeholder="Номер паспорта">
+                    <input type="date" id="updateDateOfIssue">
+                    <input type="text" id="updateIssueBy" placeholder="Кем выдан">
+                    <input type="text" id="updatePhoto" placeholder="Фото">
+                    <button type="submit">Обновить</button>
+                </fieldset>
             </form>
         </div>
     </div>
 
     <!-- Модальное окно для удаления -->
-    <div class="modal" id="deleteModal">
-        <h2>Удалить клиента</h2>
-        <form id="deleteForm">
+    <div class="modal" id="deleteModal" role="dialog" aria-labelledby="deleteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteModalTitle">Удалить клиента</h2>
+        <form id="deleteForm" novalidate>
             <input type="number" id="deleteId" placeholder="ID клиента" required>
             <button type="submit">Удалить</button>
         </form>
     </div>
-</div>
+</section>
 
-<!-- Другие секции (пока пустые) -->
-<div class="section" id="employeesSection">Секция сотрудников</div>
-<div class="section" id="excursionsSection">Секция программ экскурсий</div>
-<div class="section" id="tripsSection">Секция поездок</div>
-<div class="section" id="groupToursSection">Секция групповых туров</div>
-<div class="section" id="routePointsSection">Секция маршрутов по точкам</div>
-<div class="section" id="routesSection">Секция маршрутов</div>
-<div class="section" id="citiesSection">Секция городов</div>
-<div class="section" id="hotelsSection">Секция отелей</div>
-<div class="section" id="documentsSection">Секция документов</div>
-<div class="section" id="settingsSection">Секция настроек</div>
-<div class="section" id="contentSection">Секция содержания</div>
-<div class="section" id="aboutSection">Секция о программе</div>
+<!-- Секция сотрудников -->
+<section class="section active" id="employeesSection" aria-labelledby="employeesSectionTitle">
+    <header>
+        <h2 id="employeesSectionTitle">Управление сотрудниками</h2>
+    </header>
+    <div class="buttons">
+        <button id="addEmployeeButton" onclick="openModal('addEmployeeModal')" aria-label="Добавить сотрудника">Добавить</button>
+        <button id="updateEmployeeButton" onclick="openModal('updateEmployeeModal')" aria-label="Обновить сотрудника">Обновить</button>
+        <button id="deleteEmployeeButton"  onclick="openModal('deleteEmployeeModal')" aria-label="Удалить сотрудника">Удалить</button>
+        <button id="searchEmployeeButton" aria-label="Поиск сотрудника">Поиск</button>
+        <input type="text" id="searchEmployeeInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
 
-<script>
-    const apiUrl = "http://localhost:8080/api/clients";
+    <table id="employeesTable" aria-describedby="employeesTableDesc">
+        <caption id="employeesTableDesc">Список сотрудников</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные сотрудников будут загружены здесь -->
+        </tbody>
+    </table>
 
-    const overlay = document.querySelector("#overlay");
-    const updateModal = document.querySelector("#updateModal");
-    const step1 = document.querySelector("#step1");
-    const step2 = document.querySelector("#step2");
+    <div class="overlay" id="overlayEmployee" aria-hidden="true"></div>
 
-    // Открытие и закрытие модальных окон
-    function openModal(modal) {
-        modal.classList.add("active");
-        overlay.classList.add("active");
-    }
+    <!-- Модальное окно для добавления сотрудника -->
+    <div class="modal" id="addEmployeeModal" role="dialog" aria-labelledby="addEmployeeModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addEmployeeModalTitle">Добавить сотрудника</h2>
+        <form id="addEmployeeForm" novalidate>
+            <fieldset>
+                <legend>Данные сотрудника</legend>
+                <input type="text" id="addEmployeeLastName" placeholder="Фамилия" required>
+                <input type="text" id="addEmployeeFirstName" placeholder="Имя" required>
+                <input type="text" id="addEmployeeSurName" placeholder="Отчество">
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
 
-    function closeModal() {
-        document.querySelectorAll(".modal").forEach(modal => modal.classList.remove("active"));
-        overlay.classList.remove("active");
-        step1.style.display = "block";
-        step2.style.display = "none";
-    }
+    <!-- Модальное окно для обновления сотрудника -->
+    <div class="modal" id="updateEmployeeModal" role="dialog" aria-labelledby="updateEmployeeModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateEmployeeModalTitle">Обновить сотрудника</h2>
+        <div id="fetchEmployeeStep">
+            <form id="fetchEmployeeForm" novalidate>
+                <input type="number" id="fetchEmployeeId" placeholder="Введите ID сотрудника" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateEmployeeStep" style="display: none;">
+            <form id="updateEmployeeForm" novalidate>
+                <fieldset>
+                    <legend>Данные сотрудника</legend>
+                    <input type="text" id="updateEmployeeLastName" placeholder="Фамилия">
+                    <input type="text" id="updateEmployeeFirstName" placeholder="Имя">
+                    <input type="text" id="updateEmployeeSurName" placeholder="Отчество">
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
 
-    overlay.addEventListener("click", closeModal);
+    <!-- Модальное окно для удаления сотрудника -->
+    <div class="modal" id="deleteEmployeeModal" role="dialog" aria-labelledby="deleteEmployeeModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteEmployeeModalTitle">Удалить сотрудника</h2>
+        <form id="deleteEmployeeForm" novalidate>
+            <input type="number" id="deleteEmployeeId" placeholder="ID сотрудника" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
 
-    // Функционал для кнопки обновления
-    document.querySelector("#updateButton").addEventListener("click", () => openModal(updateModal));
-    // Функционал для кнопки добавления
-    document.querySelector("#addButton").addEventListener("click", () => openModal(document.querySelector("#addModal")));
+<!-- Секция Экскурсионной программы -->
+<section class="section active" id="excursionProgramSection" aria-labelledby="excursionProgramSectionTitle">
+    <header>
+        <h2 id="excursionProgramSectionTitle">Экскурсионная программа</h2>
+    </header>
+    <div class="buttons">
+        <button id="addExcursionProgramButton" onclick="openModal('addExcursionProgramModal')"  aria-label="Добавить экскурсионную программу">Добавить</button>
+        <button id="updateExcursionProgramButton" onclick="openModal('updateExcursionProgramModal')"  aria-label="Обновить экскурсионную программу">Обновить</button>
+        <button id="deleteExcursionProgramButton" onclick="openModal('deleteExcursionProgramModal')"  aria-label="Удалить экскурсионную программу">Удалить</button>
+        <button id="searchExcursionProgramButton" aria-label="Поиск экскурсионной программы">Поиск</button>
+        <input type="text" id="searchExcursionProgramInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
 
-    // Функционал для кнопки обновления
-    document.querySelector("#updateButton").addEventListener("click", () => openModal(updateModal));
+    <table id="excursionProgramTable" aria-describedby="excursionProgramTableDesc">
+        <caption id="excursionProgramTableDesc">Список экскурсионных программ</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название экскурсионной программы</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные экскурсионных программ будут загружены здесь -->
+        </tbody>
+    </table>
 
-    // Функционал для кнопки удаления
-    document.querySelector("#deleteButton").addEventListener("click", () => openModal(document.querySelector("#deleteModal")));
+    <div class="overlay" id="overlayExcursionProgram" aria-hidden="true"></div>
 
-    // Функционал для кнопки поиска
-    document.querySelector("#searchButton").addEventListener("click", () => {
-        const searchInput = document.querySelector("#searchInput");
-        searchInput.style.display = searchInput.style.display === "none" || searchInput.style.display === "" ? "block" : "none";
-    });
-    document.querySelector("#searchInput").addEventListener("input", async (e) => {
-        const query = e.target.value.toLowerCase();
-        const response = await fetch(apiUrl);
-        const clients = await response.json();
-        const filteredClients = clients.filter(client =>
-            client.lastname.toLowerCase().includes(query) ||
-            client.firstname.toLowerCase().includes(query) ||
-            client.surname.toLowerCase().includes(query)
-        );
-        renderClients(filteredClients);
-    });
+    <!-- Модальное окно для добавления экскурсионной программы -->
+    <div class="modal" id="addExcursionProgramModal" role="dialog" aria-labelledby="addExcursionProgramModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addExcursionProgramModalTitle">Добавить экскурсионную программу</h2>
+        <form id="addExcursionProgramForm" novalidate>
+            <fieldset>
+                <legend>Данные экскурсионной программы</legend>
+                <input type="text" id="addExcursionProgramName" placeholder="Название экскурсионной программы" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
 
-    // Загрузка данных клиента для обновления
-    document.querySelector("#fetchClientForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const id = document.querySelector("#fetchClientId").value;
-        const response = await fetch(`${apiUrl}/${id}`);
-        if (response.ok) {
-            const client = await response.json();
-            // Заполняем поля данными клиента
-            document.querySelector("#updateLastname").value = client.lastname || "";
-            document.querySelector("#updateFirstname").value = client.firstname || "";
-            document.querySelector("#updateSurname").value = client.surname || "";
-            document.querySelector("#updateDateOfBirth").value = client.dateOfBirth || "";
-            document.querySelector("#updatePassportSeries").value = client.passportSeries || "";
-            document.querySelector("#updatePassportNumber").value = client.passportNumber || "";
-            document.querySelector("#updateDateOfIssue").value = client.dateOfIssue || "";
-            document.querySelector("#updateIssueBy").value = client.issueBy || "";
-            document.querySelector("#updatePhoto").value = client.photo || "";
+    <!-- Модальное окно для обновления экскурсионной программы -->
+    <div class="modal" id="updateExcursionProgramModal" role="dialog" aria-labelledby="updateExcursionProgramModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateExcursionProgramModalTitle">Обновить экскурсионную программу</h2>
+        <div id="fetchExcursionProgramStep">
+            <form id="fetchExcursionProgramForm" novalidate>
+                <input type="number" id="fetchExcursionProgramId" placeholder="Введите ID экскурсионной программы" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateExcursionProgramStep" style="display: none;">
+            <form id="updateExcursionProgramForm" novalidate>
+                <fieldset>
+                    <legend>Данные экскурсионной программы</legend>
+                    <input type="text" id="updateExcursionProgramName" placeholder="Название экскурсионной программы" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
 
-            // Переход ко второму шагу
-            step1.style.display = "none";
-            step2.style.display = "block";
-        } else {
-            alert("Клиент с таким ID не найден!");
-        }
-    });
+    <!-- Модальное окно для удаления экскурсионной программы -->
+    <div class="modal" id="deleteExcursionProgramModal" role="dialog" aria-labelledby="deleteExcursionProgramModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteExcursionProgramModalTitle">Удалить экскурсионную программу</h2>
+        <form id="deleteExcursionProgramForm" novalidate>
+            <input type="number" id="deleteExcursionProgramId" placeholder="ID экскурсионной программы" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
 
-    // Отправка обновлённых данных клиента
-    document.querySelector("#updateForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const id = document.querySelector("#fetchClientId").value;
-        const client = {
-            lastname: document.querySelector("#updateLastname").value || null,
-            firstname: document.querySelector("#updateFirstname").value || null,
-            surname: document.querySelector("#updateSurname").value || null,
-            dateOfBirth: document.querySelector("#updateDateOfBirth").value || null,
-            passportSeries: document.querySelector("#updatePassportSeries").value || null,
-            passportNumber: document.querySelector("#updatePassportNumber").value || null,
-            dateOfIssue: document.querySelector("#updateDateOfIssue").value || null,
-            issueBy: document.querySelector("#updateIssueBy").value || null,
-            photo: document.querySelector("#updatePhoto").value || null,
-        };
-        await fetch(`${apiUrl}/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(client),
-        });
-        closeModal();
-        loadClients();
-    });
+<!--Секция поездок -->
+<section class="section active" id="tripSection" aria-labelledby="tripSectionTitle">
+    <header>
+        <h2 id="tripSectionTitle">Управление поездками</h2>
+    </header>
+    <div class="buttons">
+        <button id="addTripButton" onclick="openModal('addTripModal')"  aria-label="Добавить поездку">Добавить</button>
+        <button id="updateTripButton" onclick="openModal('updateTripModal')"  aria-label="Обновить поездку">Обновить</button>
+        <button id="deleteTripButton" onclick="openModal('deleteTripModal')"  aria-label="Удалить поездку">Удалить</button>
+        <button id="searchTripButton" aria-label="Поиск поездки">Поиск</button>
+        <input type="text" id="searchTripInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
 
-    // Загрузка всех клиентов
-    async function loadClients() {
-        const response = await fetch(apiUrl);
-        const clients = await response.json();
-        renderClients(clients);
-    }
+    <table id="tripTable" aria-describedby="tripTableDesc">
+        <caption id="tripTableDesc">Список поездок</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Стоимость поездки</th>
+            <th>ID сотрудника</th>
+            <th>ID маршрута</th>
+            <th>Время отправления</th>
+            <th>Время прибытия</th>
+            <th>Количество туристов</th>
+            <th>Размер штрафа</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные поездок будут загружены здесь -->
+        </tbody>
+    </table>
 
-    function renderClients(clients) {
-        const tableBody = document.querySelector("#clientsTable tbody");
-        tableBody.innerHTML = "";
-        clients.forEach(client => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${client.id}</td>
-                <td>${client.lastname}</td>
-                <td>${client.firstname}</td>
-                <td>${client.surname}</td>
-                <td>${client.dateOfBirth}</td>
-                <td>${client.passportSeries}</td>
-                <td>${client.passportNumber}</td>
-                <td>${client.dateOfIssue}</td>
-                <td>${client.issueBy}</td>
-                <td>${client.photo}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
+    <div class="overlay" id="overlayTrip" aria-hidden="true"></div>
 
-    // Функция для переключения между секциями
-    function showSection(sectionId) {
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
-        });
-        document.getElementById(sectionId + 'Section').classList.add('active');
-        if (sectionId === 'clients') {
-            loadClients();
-        }
-    }
+    <!-- Модальное окно для добавления поездки -->
+    <div class="modal" id="addTripModal" role="dialog" aria-labelledby="addTripModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addTripModalTitle">Добавить поездку</h2>
+        <form id="addTripForm" novalidate>
+            <fieldset>
+                <legend>Данные поездки</legend>
+                <input type="number" id="addTripId" placeholder="ID поездки" required>
+                <input type="number" id="addTripCost" placeholder="Стоимость поездки" step="0.01" required>
+                <input type="number" id="addEmployeeId" placeholder="ID сотрудника" required>
+                <input type="number" id="addRoutesId" placeholder="ID маршрута" required>
+                <input type="datetime-local" id="addDepartureTime" required>
+                <input type="time" id="addArrivalTime" required>
+                <input type="number" id="addTouristCount" placeholder="Количество туристов" required>
+                <input type="number" id="addPenaltySize" placeholder="Размер штрафа" step="0.01" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
 
-    // Инициализация
-    loadClients();
-</script>
+    <!-- Модальное окно для обновления поездки -->
+    <div class="modal" id="updateTripModal" role="dialog" aria-labelledby="updateTripModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateTripModalTitle">Обновить поездку</h2>
+        <div id="fetchTripStep">
+            <form id="fetchTripForm" novalidate>
+                <input type="number" id="fetchTripId" placeholder="Введите ID поездки" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateTripStep" style="display: none;">
+            <form id="updateTripForm" novalidate>
+                <fieldset>
+                    <legend>Данные поездки</legend>
+                    <input type="number" id="updateTripId" placeholder="ID поездки" required>
+                    <input type="number" id="updateTripCost" placeholder="Стоимость поездки" step="0.01" required>
+                    <input type="number" id="updateEmployeeId" placeholder="ID сотрудника" required>
+                    <input type="number" id="updateRoutesId" placeholder="ID маршрута" required>
+                    <input type="datetime-local" id="updateDepartureTime" required>
+                    <input type="time" id="updateArrivalTime" required>
+                    <input type="number" id="updateTouristCount" placeholder="Количество туристов" required>
+                    <input type="number" id="updatePenaltySize" placeholder="Размер штрафа" step="0.01" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления поездки -->
+    <div class="modal" id="deleteTripModal" role="dialog" aria-labelledby="deleteTripModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteTripModalTitle">Удалить поездку</h2>
+        <form id="deleteTripForm" novalidate>
+            <input type="number" id="deleteTripId" placeholder="ID поездки" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция маршрутов -->
+<section class="section active" id="routeSection" aria-labelledby="routeSectionTitle">
+    <header>
+        <h2 id="routeSectionTitle">Управление маршрутами</h2>
+    </header>
+    <div class="buttons">
+        <button id="addRouteButton" onclick="openModal('addRouteModal')" aria-label="Добавить маршрут">Добавить</button>
+        <button id="updateRouteButton" onclick="openModal('updateRouteModal')" aria-label="Обновить маршрут">Обновить</button>
+        <button id="deleteRouteButton" onclick="openModal('deleteRouteModal')" aria-label="Удалить маршрут">Удалить</button>
+        <button id="searchRouteButton" aria-label="Поиск маршрута">Поиск</button>
+        <input type="text" id="searchRouteInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="routeTable" aria-describedby="routeTableDesc">
+        <caption id="routeTableDesc">Список маршрутов</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID страны</th>
+            <th>Название маршрута</th>
+            <th>Продолжительность (дни)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные маршрутов будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayRoute" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления маршрута -->
+    <div class="modal" id="addRouteModal" role="dialog" aria-labelledby="addRouteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addRouteModalTitle">Добавить маршрут</h2>
+        <form id="addRouteForm" novalidate>
+            <fieldset>
+                <legend>Данные маршрута</legend>
+                <input type="number" id="addRouteId" placeholder="ID маршрута" required>
+                <input type="number" id="addCountryId" placeholder="ID страны" required>
+                <input type="text" id="addRouteName" placeholder="Название маршрута" required>
+                <input type="number" id="addDuration" placeholder="Продолжительность (дни)" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления маршрута -->
+    <div class="modal" id="updateRouteModal" role="dialog" aria-labelledby="updateRouteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateRouteModalTitle">Обновить маршрут</h2>
+        <div id="fetchRouteStep">
+            <form id="fetchRouteForm" novalidate>
+                <input type="number" id="fetchRouteId" placeholder="Введите ID маршрута" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateRouteStep" style="display: none;">
+            <form id="updateRouteForm" novalidate>
+                <fieldset>
+                    <legend>Данные маршрута</legend>
+                    <input type="number" id="updateRouteId" placeholder="ID маршрута" required>
+                    <input type="number" id="updateCountryId" placeholder="ID страны" required>
+                    <input type="text" id="updateRouteName" placeholder="Название маршрута" required>
+                    <input type="number" id="updateDuration" placeholder="Продолжительность (дни)" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления маршрута -->
+    <div class="modal" id="deleteRouteModal" role="dialog" aria-labelledby="deleteRouteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteRouteModalTitle">Удалить маршрут</h2>
+        <form id="deleteRouteForm" novalidate>
+            <input type="number" id="deleteRouteId" placeholder="ID маршрута" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция городов -->
+<section class="section active" id="citySection" aria-labelledby="citySectionTitle">
+    <header>
+        <h2 id="citySectionTitle">Управление городами</h2>
+    </header>
+    <div class="buttons">
+        <button id="addCityButton" onclick="openModal('addCityModal')" aria-label="Добавить город">Добавить</button>
+        <button id="updateCityButton" onclick="openModal('updateCityModal')" aria-label="Обновить город">Обновить</button>
+        <button id="deleteCityButton" onclick="openModal('deleteCityModal')" aria-label="Удалить город">Удалить</button>
+        <button id="searchCityButton" aria-label="Поиск города">Поиск</button>
+        <input type="text" id="searchCityInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="cityTable" aria-describedby="cityTableDesc">
+        <caption id="cityTableDesc">Список городов</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID отеля</th>
+            <th>ID экскурсионной программы</th>
+            <th>Название города</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные городов будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayCity" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления города -->
+    <div class="modal" id="addCityModal" role="dialog" aria-labelledby="addCityModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addCityModalTitle">Добавить город</h2>
+        <form id="addCityForm" novalidate>
+            <fieldset>
+                <legend>Данные города</legend>
+                <input type="number" id="addCityId" placeholder="ID города" required>
+                <input type="number" id="addCityHotel" placeholder="ID отеля" required>
+                <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required>
+                <input type="text" id="addCityName" placeholder="Название города" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления города -->
+    <div class="modal" id="updateCityModal" role="dialog" aria-labelledby="updateCityModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateCityModalTitle">Обновить город</h2>
+        <div id="fetchCityStep">
+            <form id="fetchCityForm" novalidate>
+                <input type="number" id="fetchCityId" placeholder="Введите ID города" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateCityStep" style="display: none;">
+            <form id="updateCityForm" novalidate>
+                <fieldset>
+                    <legend>Данные города</legend>
+                    <input type="number" id="updateCityId" placeholder="ID города" required>
+                    <input type="number" id="updateCityHotelId" placeholder="ID отеля" required>
+                    <input type="number" id="updateCityExcursionProgramId" placeholder="ID экскурсионной программы" required>
+                    <input type="text" id="updateCityName" placeholder="Название города" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Модальное окно для удаления города -->
+    <div class="modal" id="deleteCityModal" role="dialog" aria-labelledby="deleteCityModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteCityModalTitle">Удалить город</h2>
+        <form id="deleteCityForm" novalidate>
+            <input type="number" id="deleteCityId" placeholder="ID города" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция отелей -->
+<section class="section active" id="hotelSection" aria-labelledby="hotelSectionTitle">
+    <header>
+        <h2 id="hotelSectionTitle">Управление отелями</h2>
+    </header>
+    <div class="buttons">
+        <button id="addHotelButton" onclick="openModal('addHotelModal')" aria-label="Добавить отель">Добавить</button>
+        <button id="updateHotelButton" onclick="openModal('updateHotelModal')" aria-label="Обновить отель">Обновить</button>
+        <button id="deleteHotelButton" onclick="openModal('deleteHotelModal')" aria-label="Удалить отель">Удалить</button>
+        <button id="searchHotelButton" aria-label="Поиск отеля">Поиск</button>
+        <input type="text" id="searchHotelInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="hotelTable" aria-describedby="hotelTableDesc">
+        <caption id="hotelTableDesc">Список отелей</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название отеля</th>
+            <th>Класс отеля</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные отелей будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayHotel" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления отеля -->
+    <div class="modal" id="addHotelModal" role="dialog" aria-labelledby="addHotelModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addHotelModalTitle">Добавить отель</h2>
+        <form id="addHotelForm" novalidate>
+            <fieldset>
+                <legend>Данные отеля</legend>
+                <input type="number" id="addHotelId" placeholder="ID отеля" required>
+                <input type="text" id="addHotelName" placeholder="Название отеля" required>
+                <input type="number" id="addHotelClass" placeholder="Класс отеля" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления отеля -->
+    <div class="modal" id="updateHotelModal" role="dialog" aria-labelledby="updateHotelModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateHotelModalTitle">Обновить отель</h2>
+        <div id="fetchHotelStep">
+            <form id="fetchHotelForm" novalidate>
+                <input type="number" id="fetchHotelId" placeholder="Введите ID отеля" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateHotelStep" style="display: none;">
+            <form id="updateHotelForm" novalidate>
+                <fieldset>
+                    <legend>Данные отеля</legend>
+                    <input type="number" id="updateHotelId" placeholder="ID отеля" required>
+                    <input type="text" id="updateHotelName" placeholder="Название отеля" required>
+                    <input type="number" id="updateHotelClass" placeholder="Класс отеля" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления отеля -->
+    <div class="modal" id="deleteHotelModal" role="dialog" aria-labelledby="deleteHotelModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteHotelModalTitle">Удалить отель</h2>
+        <form id="deleteHotelForm" novalidate>
+            <input type="number" id="deleteHotelId" placeholder="ID отеля" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+<!--Секция документов -->
+<section id="documentsSection" class="section" aria-labelledby="documentsSectionTitle">
+    <header>
+        <h2 id="documentsSectionTitle">Документы</h2>
+    </header>
+
+    <div id="documents" class="content" style="display:none;">
+        <div id="sqlInterface" class="hidden sql-container">
+            <label for="sqlQuery">Введите ваш SQL-запрос:</label>
+            <textarea id="sqlQuery" placeholder="Введите SQL-запрос..." rows="4"></textarea>
+            <button onclick="executeSQLQuery()">Ввести</button>
+
+            <table id="resultsTable" class="hidden">
+                <thead>
+                <tr id="tableHeaders">
+                    <!-- Заголовки будут добавляться динамически -->
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Результаты запроса -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!--Секция настроек -->
+<section class="section" id="settingsSection" aria-labelledby="settingsSectionTitle">
+    <header>
+        <h2 id="settingsSectionTitle">Настройки</h2>
+    </header>
+
+    <div class="settings">
+        <div class="language-settings">
+            <h3>Сменить язык</h3>
+            <select id="languageSelect" aria-label="Выберите язык">
+                <option value="en">Английский</option>
+                <option value="ru">Русский</option>
+                <option value="fr">Французский</option>
+                <option value="de">Немецкий</option>
+                <!-- Добавьте другие языки при необходимости -->
+            </select>
+        </div>
+
+        <div class="font-size-settings">
+            <h3>Размер шрифта</h3>
+            <button id="increaseFontSize" aria-label="Увеличить размер шрифта">Увеличить</button>
+            <button id="decreaseFontSize" aria-label="Уменьшить размер шрифта">Уменьшить</button>
+            <p id="currentFontSize">Текущий размер шрифта: <span id="fontSizeValue">16px</span></p>
+        </div>
+    </div>
+</section>
+<!--Секция смены пароля -->
+<section class="section" id="changePasswordSection" aria-labelledby="changePasswordTitle">
+    <header>
+        <h2 id="changePasswordTitle">Тут короче пароль менять будем</h2>
+    </header>
+</section>
+<!--Секция содержания -->
+<section class="section" id="contentSection" aria-labelledby="contentSectionTitle">
+    <header>
+        <h2 id="contentSectionTitle">Содержание</h2>
+    </header>
+
+    <div class="content">
+        <p>
+            Это приложение предназначено для управления вашими задачами и проектами. С его помощью вы можете легко отслеживать свои задачи, устанавливать приоритеты и получать напоминания о сроках выполнения.
+        </p>
+        <p>
+            Для использования приложения выполните следующие шаги:
+        </p>
+        <ol>
+            <li>Создайте новую задачу, нажав на кнопку "Добавить задачу".</li>
+            <li>Введите название и описание задачи.</li>
+            <li>Установите приоритет и срок выполнения.</li>
+            <li>Нажмите "Сохранить", чтобы добавить задачу в список.</li>
+            <li>Отмечайте задачи как выполненные, когда они будут завершены.</li>
+        </ol>
+        <p>
+            Вы также можете редактировать и удалять задачи по мере необходимости. Приложение предоставляет удобный интерфейс для управления всеми вашими задачами в одном месте.
+        </p>
+    </div>
+</section>
+
+<!--Секция о программе -->
+<section class="section" id="aboutSection" aria-labelledby="aboutSectionTitle">
+    <header>
+        <h2 id="aboutSectionTitle">О программе</h2>
+    </header>
+
+    <div class="about">
+        <p>
+            Текущая версия приложения: <strong>1.0.0</strong>
+        </p>
+        <p>
+            Это курсовой проект, разработанный <strong>Баталовым Максимом</strong>, студентом группы <strong>АВТ-214</strong>.
+        </p>
+        <p>
+            Проект выполнен по дисциплине <strong>Базы данных</strong>.
+        </p>
+    </div>
+</section>
+
+
+
+
+<script src="./main.js"></script>
+<script src="./client.js"></script>
+
 
 </body>
 </html>
 
 
+<!--<script src="./client.js"></script>-->
+<!--<script src="./employee.js"></script>-->
+<!--<script src="./excursions.js"></script>-->
+<!--<script>-->
+<!--    // Функция для переключения между секциями-->
+<!--    function showSection(sectionId) {-->
+<!--        document.querySelectorAll('.section').forEach(section => {-->
+<!--            section.classList.remove('active');-->
+<!--        });-->
+<!--        document.getElementById(sectionId + 'Section').classList.add('active');-->
+<!--        if (sectionId === 'clients') {-->
+<!--            loadClients();-->
+
+<!--        }-->
+<!--        if (sectionId === 'employees') {-->
+<!--            loadEmployees();-->
+
+<!--        }-->
+<!--        if (sectionId === 'excursions') {-->
+<!--            loadExcursions();-->
+
+<!--        }-->
+<!--        if (sectionId === 'documents') {-->
+<!--            toggleSQLInterface();-->
+
+<!--        }-->
+
+<!--    }-->
+<!--    //Показать/скрыть интерфейс SQL-запросов&ndash;&gt;-->
+<!--    function toggleSQLInterface() {-->
+<!--            const sqlInterface = document.getElementById("sqlInterface");-->
+<!--            sqlInterface.classList.toggle("hidden");-->
+<!--        }-->
+<!--    // Выполнение SQL-запроса-->
+<!--    async function executeSQLQuery() {-->
+<!--        const query = document.getElementById("sqlQuery").value;-->
+
+<!--        try {-->
+<!--            // Отправка запроса на сервер-->
+<!--            const response = await fetch('/api/execute-sql', {-->
+<!--                method: 'POST',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json'-->
+<!--                },-->
+<!--                body: JSON.stringify({ sql: query })-->
+<!--            });-->
+
+<!--            if (!response.ok) {-->
+<!--                throw new Error('Ошибка при выполнении запроса');-->
+<!--            }-->
+
+<!--            const data = await response.json();-->
+<!--            renderResultsTable(data);-->
+<!--        } catch (error) {-->
+<!--            alert('Ошибка: ' + error.message);-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Отображение результатов в таблице-->
+<!--    function renderResultsTable(data) {-->
+<!--        const table = document.getElementById("resultsTable");-->
+<!--        const tableHeaders = document.getElementById("tableHeaders");-->
+<!--        const tableBody = table.querySelector("tbody");-->
+
+<!--        // Очистка таблицы-->
+<!--        tableHeaders.innerHTML = '';-->
+<!--        tableBody.innerHTML = '';-->
+
+<!--        if (data.length === 0) {-->
+<!--            alert("Нет результатов");-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // Добавление заголовков-->
+<!--        Object.keys(data[0]).forEach(key => {-->
+<!--            const th = document.createElement("th");-->
+<!--            th.textContent = key;-->
+<!--            tableHeaders.appendChild(th);-->
+<!--        });-->
+
+<!--        // Добавление строк-->
+<!--        data.forEach(row => {-->
+<!--            const tr = document.createElement("tr");-->
+<!--            Object.values(row).forEach(value => {-->
+<!--                const td = document.createElement("td");-->
+<!--                td.textContent = value;-->
+<!--                tr.appendChild(td);-->
+<!--            });-->
+<!--            tableBody.appendChild(tr);-->
+<!--        });-->
+
+<!--        table.classList.remove("hidden");-->
+<!--    }-->
+
+<!--</script>-->
