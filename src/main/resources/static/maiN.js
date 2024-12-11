@@ -5,7 +5,6 @@ function openModal(modalId) {
         modal.style.display = "block"; // Показываем модальное окно
     }
 }
-
 function showSection(sectionId) {
     // Скрыть все секции
     const sections = document.querySelectorAll('.section');
@@ -20,8 +19,7 @@ function showSection(sectionId) {
     }
 }
 
-
 // Пример инициализации (если нужно)
 document.addEventListener('DOMContentLoaded', function() {
-    showSection()
+    showSection();
 });

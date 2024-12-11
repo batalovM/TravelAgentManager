@@ -19,3 +19,4 @@ public class Route {
     private String routeName;
     private int duration;
 }
+

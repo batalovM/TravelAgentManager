@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,8 +15,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Long id;
+    private String id;
     private String username;
-    private String role;
     private String password;
+    private String role;
+
+    public User(String admin, String s, String admin1) {
+    }
 }

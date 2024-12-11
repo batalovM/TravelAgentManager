@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <title>Управление Туристическим Агентством</title>
     <style>
         body {
@@ -110,6 +112,7 @@
         .section.active {
             display: block;
         }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -437,7 +440,7 @@
                 <legend>Данные поездки</legend>
                 <input type="number" id="addTripId" placeholder="ID поездки" required>
                 <input type="number" id="addTripCost" placeholder="Стоимость поездки" step="0.01" required>
-                <input type="number" id="addEmployeeId" placeholder="ID сотрудника" required>
+                <input type="number" id="addEmployeeId" placeholder="Имя сотрудника" required>
                 <input type="number" id="addRoutesId" placeholder="ID маршрута" required>
                 <input type="datetime-local" id="addDepartureTime" required>
                 <input type="time" id="addArrivalTime" required>
@@ -605,7 +608,6 @@
         <form id="addCityForm" novalidate>
             <fieldset>
                 <legend>Данные города</legend>
-                <input type="number" id="addCityId" placeholder="ID города" required>
                 <input type="number" id="addCityHotel" placeholder="ID отеля" required>
                 <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required>
                 <input type="text" id="addCityName" placeholder="Название города" required>
@@ -686,7 +688,6 @@
         <form id="addHotelForm" novalidate>
             <fieldset>
                 <legend>Данные отеля</legend>
-                <input type="number" id="addHotelId" placeholder="ID отеля" required>
                 <input type="text" id="addHotelName" placeholder="Название отеля" required>
                 <input type="number" id="addHotelClass" placeholder="Класс отеля" required>
                 <button type="submit">Добавить</button>
@@ -727,17 +728,24 @@
         </form>
     </div>
 </section>
+
+
 <!--Секция документов -->
 <section id="documentsSection" class="section" aria-labelledby="documentsSectionTitle">
     <header>
         <h2 id="documentsSectionTitle">Документы</h2>
     </header>
 
-    <div id="documents" class="content" style="display:none;">
-        <div id="sqlInterface" class="hidden sql-container">
+    <div id="documents" class="content">
+        <div id="sqlInterface" class="sql-container hidden">
+            <button id="exampleQueryClients">Пример 1</button>
+            <button id="exampleQueryRoutes">Пример 2</button>
+            <button id="exampleQueryTrips">Пример 3</button>
+            <br>
             <label for="sqlQuery">Введите ваш SQL-запрос:</label>
-            <textarea id="sqlQuery" placeholder="Введите SQL-запрос..." rows="4"></textarea>
-            <button onclick="executeSQLQuery()">Ввести</button>
+            <br>
+            <textarea id="sqlQuery" placeholder="" rows="4"></textarea>
+            <button id="executeQueryButton">Выполнить</button>
 
             <table id="resultsTable" class="hidden">
                 <thead>
@@ -750,8 +758,11 @@
                 </tbody>
             </table>
         </div>
+        <button id="toggleSQLButton">Показать/Скрыть интерфейс SQL-запросов</button>
+        <button id="saveQueryButton">Сохранить результат SQL-запроса</button>
     </div>
 </section>
+
 
 <!--Секция настроек -->
 <section class="section" id="settingsSection" aria-labelledby="settingsSectionTitle">
@@ -833,106 +844,34 @@
 
 
 
-<script src="./main.js"></script>
+<script src="./maiN.js"></script>
 <script src="./client.js"></script>
+<script src="./employee.js"></script>
+<script src="./excursions.js"></script>
+<script src="./trips.js"></script>
+<script src="./routes.js"></script>
+<script src="./cities.js"></script>
+<script src="./hotels.js"></script>
+<script src="./documents.js"></script>
+<script>
+    const sqlInterface = document.getElementById("sqlInterface");
+    const toggleSQLButton = document.getElementById("toggleSQLButton");
+    const closeButtons = document.querySelectorAll('.close');
 
+    closeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var modal = button.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    function toggleSQLInterface() {
+        sqlInterface.classList.toggle('hidden');
+    }
 
+    // Обработчик кнопки "Показать/Скрыть интерфейс SQL-запросов"
+    toggleSQLButton.addEventListener('click', toggleSQLInterface);
+</script>
 </body>
 </html>
-
-
-<!--<script src="./client.js"></script>-->
-<!--<script src="./employee.js"></script>-->
-<!--<script src="./excursions.js"></script>-->
-<!--<script>-->
-<!--    // Функция для переключения между секциями-->
-<!--    function showSection(sectionId) {-->
-<!--        document.querySelectorAll('.section').forEach(section => {-->
-<!--            section.classList.remove('active');-->
-<!--        });-->
-<!--        document.getElementById(sectionId + 'Section').classList.add('active');-->
-<!--        if (sectionId === 'clients') {-->
-<!--            loadClients();-->
-
-<!--        }-->
-<!--        if (sectionId === 'employees') {-->
-<!--            loadEmployees();-->
-
-<!--        }-->
-<!--        if (sectionId === 'excursions') {-->
-<!--            loadExcursions();-->
-
-<!--        }-->
-<!--        if (sectionId === 'documents') {-->
-<!--            toggleSQLInterface();-->
-
-<!--        }-->
-
-<!--    }-->
-<!--    //Показать/скрыть интерфейс SQL-запросов&ndash;&gt;-->
-<!--    function toggleSQLInterface() {-->
-<!--            const sqlInterface = document.getElementById("sqlInterface");-->
-<!--            sqlInterface.classList.toggle("hidden");-->
-<!--        }-->
-<!--    // Выполнение SQL-запроса-->
-<!--    async function executeSQLQuery() {-->
-<!--        const query = document.getElementById("sqlQuery").value;-->
-
-<!--        try {-->
-<!--            // Отправка запроса на сервер-->
-<!--            const response = await fetch('/api/execute-sql', {-->
-<!--                method: 'POST',-->
-<!--                headers: {-->
-<!--                    'Content-Type': 'application/json'-->
-<!--                },-->
-<!--                body: JSON.stringify({ sql: query })-->
-<!--            });-->
-
-<!--            if (!response.ok) {-->
-<!--                throw new Error('Ошибка при выполнении запроса');-->
-<!--            }-->
-
-<!--            const data = await response.json();-->
-<!--            renderResultsTable(data);-->
-<!--        } catch (error) {-->
-<!--            alert('Ошибка: ' + error.message);-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Отображение результатов в таблице-->
-<!--    function renderResultsTable(data) {-->
-<!--        const table = document.getElementById("resultsTable");-->
-<!--        const tableHeaders = document.getElementById("tableHeaders");-->
-<!--        const tableBody = table.querySelector("tbody");-->
-
-<!--        // Очистка таблицы-->
-<!--        tableHeaders.innerHTML = '';-->
-<!--        tableBody.innerHTML = '';-->
-
-<!--        if (data.length === 0) {-->
-<!--            alert("Нет результатов");-->
-<!--            return;-->
-<!--        }-->
-
-<!--        // Добавление заголовков-->
-<!--        Object.keys(data[0]).forEach(key => {-->
-<!--            const th = document.createElement("th");-->
-<!--            th.textContent = key;-->
-<!--            tableHeaders.appendChild(th);-->
-<!--        });-->
-
-<!--        // Добавление строк-->
-<!--        data.forEach(row => {-->
-<!--            const tr = document.createElement("tr");-->
-<!--            Object.values(row).forEach(value => {-->
-<!--                const td = document.createElement("td");-->
-<!--                td.textContent = value;-->
-<!--                tr.appendChild(td);-->
-<!--            });-->
-<!--            tableBody.appendChild(tr);-->
-<!--        });-->
-
-<!--        table.classList.remove("hidden");-->
-<!--    }-->
-
-<!--</script>-->

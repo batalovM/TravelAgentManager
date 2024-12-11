@@ -31,7 +31,28 @@ public class TripRepository implements TripRep {
             trip.setTripCost(rs.getBigDecimal("tripcost"));
             trip.setEmployeeId(rs.getInt("employeeid"));
             trip.setRoutesId(rs.getInt("routesid"));
-            trip.setDepartureTime(rs.getDate("arrivaldated"));
+            trip.setDepartureTime(rs.getDate("departuretime"));
+            trip.setArrivalTime(rs.getDate("arrivaldate"));
+            trip.setTouristCount(rs.getInt("touristcount"));
+            trip.setPenaltySize(rs.getBigDecimal("penaltysize"));
+            return trip;
+        }
+    };
+    private static final RowMapper<Trip> tripRowMapperUpt = new RowMapper<>() {
+        @Override
+        public Trip mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Trip trip = new Trip();
+            trip.setId(rs.getInt("id"));
+            trip.setTripCost(rs.getBigDecimal("tripcost"));
+            String fullName = rs.getString("lastname") + " " +
+                    rs.getString("firstname") + " " +
+                    rs.getString("surname");
+            trip.setEmployeeFullName(fullName);
+            trip.setRouteName(rs.getString("routename"));
+            //trip.setEmployeeId(rs.getInt("employeeid"));
+            //trip.setRoutesId(rs.getInt("routesid"));
+            trip.setDepartureTime(rs.getDate("departuretime"));
+            trip.setArrivalTime(rs.getDate("arrivaldate"));
             trip.setTouristCount(rs.getInt("touristcount"));
             trip.setPenaltySize(rs.getBigDecimal("penaltysize"));
             return trip;
@@ -46,8 +67,14 @@ public class TripRepository implements TripRep {
 
     @Override
     public List<Trip> findAll() {
-        String sql = "SELECT * FROM trips";
-        return jdbcTemplate.query(sql, tripRowMapper);
+        String sql = "SELECT " +
+                "t.id, t.tripcost, e.lastname, e.firstname, e.surname, " +
+                "r.routename, t.departuretime, t.arrivaldate, t.touristcount, t.penaltysize " +
+                "FROM touristdb.public.trips t " +
+                "join " +
+                "touristdb.public.employee e on t.employeeid = e.id " +
+                "join routes r on t.routesid = r.id";
+        return jdbcTemplate.query(sql, tripRowMapperUpt);
     }
 
     @Override

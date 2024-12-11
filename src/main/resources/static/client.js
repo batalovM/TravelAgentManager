@@ -1,20 +1,31 @@
 const clientTableBody = document.querySelector('#clientsTable tbody');
 const addForm = document.querySelector('#addForm');
+const fetchClientForm = document.getElementById('fetchClientForm');
+const fetchClientId = document.getElementById('fetchClientId');
 const updateForm = document.querySelector('#updateForm');
 const deleteForm = document.querySelector('#deleteForm');
 const addModal = document.getElementById('addModal');
 const updateModal = document.getElementById('updateModal');
 const deleteModal = document.getElementById('deleteModal');
 
-// Helper function to display clients in the table
+const updateLastname = document.getElementById('updateLastname');
+const updateFirstname = document.getElementById('updateFirstname');
+const updateSurname = document.getElementById('updateSurname');
+const updateDateOfBirth = document.getElementById('updateDateOfBirth');
+const updatePassportSeries = document.getElementById('updatePassportSeries');
+const updatePassportNumber = document.getElementById('updatePassportNumber');
+const updateDateOfIssue = document.getElementById('updateDateOfIssue');
+const updateIssueBy = document.getElementById('updateIssueBy');
+const updatePhoto = document.getElementById('updatePhoto');
+
 function displayClients(clients) {
     clientTableBody.innerHTML = '';
     clients.forEach(client => {
         const row = document.createElement('tr');
         row.innerHTML = `
       <td>${client.id}</td>
-      <td>${client.lastName}</td>
-      <td>${client.firstName}</td>
+      <td>${client.lastname}</td>
+      <td>${client.firstname}</td>
       <td>${client.surname}</td>
       <td>${client.dateOfBirth}</td>
       <td>${client.passportSeries}</td>
@@ -26,8 +37,6 @@ function displayClients(clients) {
         clientTableBody.appendChild(row);
     });
 }
-
-// Fetch all clients
 async function fetchClients() {
     try {
         const response = await axios.get('http://localhost:8080/api/clients');
@@ -37,73 +46,114 @@ async function fetchClients() {
     }
 }
 
-// Add a new client
-async function addClient(client) {
+// Функция для добавления клиента
+async function addClient(event) {
+    event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+    // Получаем данные из формы
+    const newClient = {
+        lastname: document.getElementById('addLastname').value,
+        firstname: document.getElementById('addFirstname').value,
+        surname: document.getElementById('addSurname').value,
+        dateOfBirth: document.getElementById('addDateOfBirth').value,
+        passportSeries: document.getElementById('addPassportSeries').value,
+        passportNumber: document.getElementById('addPassportNumber').value,
+        dateOfIssue: document.getElementById('addDateOfIssue').value,
+        issueBy: document.getElementById('addIssueBy').value,
+        photo: document.getElementById('addPhoto').value
+    };
     try {
-        const response = await axios.post('http://localhost:8080/api/clients/addClients', client);
-        return response.data;
+        await fetch('/api/clients/addClients', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newClient),  // Преобразуем объект клиента в JSON
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newClient)
+        })
+        // Обновляем таблицу клиентов
+        fetchClients();
     } catch (error) {
-        console.error('Error adding client:', error);
+        console.error('Ошибка во время добавления:', error);
     }
 }
 
-// Update a client
 async function updateClient(client, id) {
     try {
-        const response = await axios.put(`http://localhost:8080/api/clients/${id}`, client);
-        return response.data;
+        const response = await fetch(`http://localhost:8080/api/clients/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(client),
+        });
+        if (!response.ok) {
+            throw new Error('Ошибка при обновлении клиента');
+        }
+        const updatedData = await response.json();
+        alert('Клиент успешно обновлён!');
     } catch (error) {
-        console.error('Error updating client:', error);
+        alert(error.message);
     }
 }
 
-// Delete a client
 async function deleteClient(id) {
     try {
-        await axios.delete(`http://localhost:8080/api/clients/${id}`);
+        await fetch(`/api/clients/${id}`, { method: 'DELETE' });
     } catch (error) {
         console.error('Error deleting client:', error);
     }
 }
 
-// Event listeners
-addForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(addForm);
-    const client = {
-        firstName: formData.get('addFirstname'),
-        lastName: formData.get('addLastname'),
-        surname: formData.get('addSurname'),
-        dateOfBirth: formData.get('addDateOfBirth'),
-        passportSeries: formData.get('addPassportSeries'),
-        passportNumber: formData.get('addPassportNumber'),
-        dateOfIssue: formData.get('addDateOfIssue'),
-        issueBy: formData.get('addIssueBy'),
-        photo: formData.get('addPhoto'),
-    };
-    await addClient(client);
-    fetchClients();
-    openModal('addModal', false);
-});
+addForm.addEventListener('submit', addClient);
 
 updateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(updateForm);
-    const client = {
-        firstName: formData.get('updateFirstname'),
-        lastName: formData.get('updateLastname'),
-        surname: formData.get('updateSurname'),
-        dateOfBirth: formData.get('updateDateOfBirth'),
-        passportSeries: formData.get('updatePassportSeries'),
-        passportNumber: formData.get('updatePassportNumber'),
-        dateOfIssue: formData.get('updateDateOfIssue'),
-        issueBy: formData.get('updateIssueBy'),
-        photo: formData.get('updatePhoto'),
+    const clientId = fetchClientId.value; // ID клиента
+    const updatedClient = {
+        lastname: updateLastname.value,
+        firstname: updateFirstname.value,
+        surname: updateSurname.value,
+        dateOfBirth: updateDateOfBirth.value,
+        passportSeries: updatePassportSeries.value,
+        passportNumber: updatePassportNumber.value,
+        dateOfIssue: updateDateOfIssue.value,
+        issueBy: updateIssueBy.value,
+        photo: updatePhoto.value
     };
-    const id = document.querySelector('#updateId').value;
-    await updateClient(client, id);
+    updateClient(updatedClient, clientId);
     fetchClients();
-    openModal('updateModal', false);
+});
+
+
+// Обработчик для загрузки данных клиента
+fetchClientForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const clientId = fetchClientId.value;
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/clients/${clientId}`);
+        if (!response.ok) {
+            throw new Error('Клиент не найден');
+        }
+        const clientData = await response.json();
+        // Заполнение полей формы данными клиента
+        updateLastname.value = clientData.lastname || '';
+        updateFirstname.value = clientData.firstname || '';
+        updateSurname.value = clientData.surname || '';
+        updateDateOfBirth.value = clientData.dateOfBirth || '';
+        updatePassportSeries.value = clientData.passportSeries || '';
+        updatePassportNumber.value = clientData.passportNumber || '';
+        updateDateOfIssue.value = clientData.dateOfIssue || '';
+        updateIssueBy.value = clientData.issueBy || '';
+        updatePhoto.value = clientData.photo || '';
+
+        // Показать второй шаг формы
+        document.getElementById('step2').style.display = 'block';
+    } catch (error) {
+        alert(error.message);
+    }
 });
 
 deleteForm.addEventListener('submit', async (e) => {
@@ -116,3 +166,25 @@ deleteForm.addEventListener('submit', async (e) => {
 
 // Fetch clients when the page loads
 fetchClients();
+
+
+
+
+const searchButton = document.getElementById('searchButton');
+const searchInput = document.getElementById('searchInput');
+
+// Обработка поиска сотрудников
+searchButton.addEventListener("click", function () {
+    searchInput.style.display = searchInput.style.display === "none" ? "block" : "none";
+});
+
+searchInput.addEventListener("input", function () {
+    const searchTerm = searchInput.value.toLowerCase();
+    const rows = clientTableBody.querySelectorAll("tr");
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        const isVisible = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
+        row.style.display = isVisible ? "" : "none";
+    });
+});

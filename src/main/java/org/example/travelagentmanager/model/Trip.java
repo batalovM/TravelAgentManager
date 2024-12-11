@@ -19,10 +19,12 @@ import java.util.Date;
 public class Trip {
     private int id;
     private BigDecimal tripCost;
+    private String employeeFullName;
+    private String routeName;
     private int employeeId;
     private int routesId;
     private Date departureTime;
-    private String arrivalTime;
+    private Date arrivalTime;
     private int touristCount;
     private BigDecimal penaltySize;
 }

@@ -1,105 +1,148 @@
-const excursionApiUrl = "http://localhost:8080/api/excursions";
+const excursionTableBody = document.querySelector('#excursionProgramTable tbody');
+const addExcursionForm = document.querySelector('#addExcursionProgramForm');
+const fetchExcursionForm = document.getElementById('fetchExcursionProgramForm');
+const fetchExcursionId = document.getElementById('fetchExcursionProgramId');
+const updateExcursionForm = document.querySelector('#updateExcursionProgramForm');
+const deleteExcursionForm = document.querySelector('#deleteExcursionProgramForm');
+const addExcursionProgramModal = document.getElementById('addExcursionProgramModal');
+const updateExcursionProgramModal = document.getElementById('updateExcursionProgramModal');
+const deleteExcursionProgramModal = document.getElementById('deleteExcursionProgramModal');
 
-const excursionOverlay = document.querySelector("#excursionOverlay");
-const updateExcursionModal = document.querySelector("#updateExcursionModal");
-const excursionStep1 = document.querySelector("#excursionStep1");
-const excursionStep2 = document.querySelector("#excursionStep2");
+const updateExcursionProgramName = document.getElementById('updateExcursionProgramName');
 
 
-function openExcursionModal(modal) {
-    modal.classList.add("active");
-    excursionOverlay.classList.add("active");
+
+function displayExcursion(excursion) {
+    excursionTableBody.innerHTML = '';
+    excursion.forEach(excursion => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+      <td>${excursion.id}</td>
+      <td>${excursion.excursionProgramName}</td>
+    `;
+        excursionTableBody.appendChild(row);
+    });
 }
-function closeExcursionModal() {
-    document.querySelectorAll("#updateExcursionModal, #addExcursionModal, #deleteExcursionModal").forEach(modal => modal.classList.remove("active"));
-    excursionOverlay.classList.remove("active");
-    excursionStep1.style.display = "block";
-    excursionStep2.style.display = "none";
+async function fetchExcursion() {
+    try {
+        const response = await axios.get('http://localhost:8080/api/excursions');
+        displayExcursion(response.data);
+    } catch (error) {
+        console.error('Error fetching excursion:', error);
+    }
 }
 
-excursionOverlay.addEventListener("click", closeExcursionModal);
+async function addExcursion(event) {
+    event.preventDefault(); // Предотвращаем отправку формы по умолчанию
 
-// Функционал для кнопки добавления экскурсионной программы'
-document.querySelector("#addExcursionButton").addEventListener("click", () => openExcursionModal(document.querySelector("#addExcursionModal")));
-// Загрузка данных экскурсионной программы для обновления
-document.querySelector("#fetchExcursionForm").addEventListener("submit", async (e) => {
+    // Получаем данные из формы
+    const newExcursion = {
+        excursionProgramName: document.getElementById('addExcursionProgramName').value,
+    };
+    try {
+        await fetch('/api/excursions/addExcursion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newExcursion),  // Преобразуем объект клиента в JSON
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newExcursion)
+        })
+        // Обновляем таблицу клиентов
+        fetchExcursion();
+    } catch (error) {
+        console.error('Ошибка во время добавления:', error);
+    }
+}
+
+async function updateExcursion(excursion, id) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/excursions/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(excursion),
+        });
+        if (!response.ok) {
+            throw new Error('Ошибка при обновлении экскурсии');
+        }
+        const updatedData = await response.json();
+        alert('Экскурсия успешно обновлена!');
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function deleteExcursion(id) {
+    try {
+        await fetch(`/api/excursions/${id}`, { method: 'DELETE' });
+    } catch (error) {
+        console.error('Error deleting excursion:', error);
+    }
+}
+
+addExcursionForm.addEventListener('submit', addExcursion);
+
+updateExcursionForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id = document.querySelector("#fetchExcursionId").value;
-    const response = await fetch(`${excursionApiUrl}/${id}`);
-    if (response.ok) {
-        const excursion = await response.json();
-        // Заполняем поля данными сотрудника
-        document.querySelector("#updateExcursionName").value = excursion.excursionProgramName || "";
-        // Переход ко второму шагу
-        excursionStep1.style.display = "none";
-        excursionStep2.style.display = "block";
-    } else {
-        alert("Программа с таким ID не найдена!");
+    const excursionId = fetchExcursionId.value; // ID клиента
+    const updatedExcursion = {
+        excursionProgramName: updateExcursionProgramName.value,
+    };
+    updateExcursion(updatedExcursion, excursionId);
+    fetchExcursion();
+});
+
+
+fetchExcursionForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const excursionId = fetchExcursionId.value;
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/excursions/${excursionId}`);
+        if (!response.ok) {
+            throw new Error('Экскурсия не найдена');
+        }
+        const excursionData = await response.json();
+        // Заполнение полей формы данными клиента
+        updateExcursionProgramName.value = excursionData.excursionProgramName || '';
+        // Показать второй шаг формы
+        document.getElementById('updateExcursionProgramStep').style.display = 'block';
+    } catch (error) {
+        alert(error.message);
     }
 });
 
-
-
-// Функционал для кнопки обновления сотрудника
-document.querySelector("#updateExcursionButton").addEventListener("click", () => openExcursionModal(updateExcursionModal));
-// Функционал для кнопки удаления экскурсионной программы
-document.querySelector("#deleteExcursionButton").addEventListener("click", () => openExcursionModal(document.querySelector("#deleteExcursionModal")));
-// Отправка обновлённых данных экскурсионной программы
-document.querySelector("#updateExcursionForm").addEventListener("submit", async (e) => {
+deleteExcursionForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id = document.querySelector("#fetchExcursionId").value;
-    const excursion = {
-        excursionProgramName: document.querySelector("#updateExcursionName").value,
-    };
-    await fetch(`${excursionApiUrl}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(excursion),
-    });
-    closeExcursionModal();
-    loadExcursions();
-});
-// Функционал для кнопки поиска
-document.querySelector("#searchExcursionButton").addEventListener("click", () => {
-    const searchExcursionInput = document.querySelector("#searchExcursionInput");
-    searchExcursionInput.style.display = searchExcursionInput.style.display === "none" || searchExcursionInput.style.display === "" ? "block" : "none";
-});
-document.querySelector("#searchExcursionInput").addEventListener("input", async (e) => {
-    const query = e.target.value.toLowerCase();
-    const response = await fetch(excursionApiUrl);
-    const excursions = await response.json();
-    const filteredExcursions = excursions.filter(excursion =>
-        excursion.excursionProgramName.toLowerCase().includes(query)
-    );
-    renderExcursions(filteredExcursions);
-});
-// Функционал для удаления экскурсионной программы
-document.querySelector("#deleteExcursionForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const id = document.querySelector("#deleteExcursionId").value;
-    await fetch(`${excursionApiUrl}/${id}`, {
-        method: "DELETE",
-    });
-    closeExcursionModal();
-    loadExcursions();
+    const id = document.querySelector('#deleteExcursionProgramId').value;
+    await deleteExcursion(id);
+    fetchExcursion();
+    openModal('deleteExcursionProgramModal', false);
 });
 
-// Загрузка всех программ экскурсий
-async function loadExcursions() {
-    const response = await fetch(excursionApiUrl);
-    const excursions = await response.json();
-    renderExcursions(excursions);
-}
-function renderExcursions(excursions) {
-    const tableBody = document.querySelector("#excursionsTable tbody");
-    tableBody.innerHTML = "";
-    excursions.forEach(excursion => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${excursion.id}</td>
-            <td>${excursion.excursionProgramName}</td>
-        `;
-        tableBody.appendChild(row);
+fetchExcursion()
+
+
+
+
+const searchExcursionProgramButton = document.getElementById('searchExcursionProgramButton');
+const searchExcursionProgramInput = document.getElementById('searchExcursionProgramInput');
+
+// Обработка поиска сотрудников
+searchExcursionProgramButton.addEventListener("click", function () {
+    searchExcursionProgramInput.style.display = searchExcursionProgramInput.style.display === "none" ? "block" : "none";
+});
+
+searchExcursionProgramInput.addEventListener("input", function () {
+    const searchTerm = searchExcursionProgramInput.value.toLowerCase();
+    const rows = excursionTableBody.querySelectorAll("tr");
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        const isVisible = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
+        row.style.display = isVisible ? "" : "none";
     });
-}
-loadExcursions();
+});
