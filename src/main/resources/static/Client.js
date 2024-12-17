@@ -19,24 +19,32 @@ const updateIssueBy = document.getElementById('updateIssueBy');
 const updatePhoto = document.getElementById('updatePhoto');
 
 function displayClients(clients) {
-    clientTableBody.innerHTML = '';
+    clientTableBody.innerHTML = '';  // Очищаем тело таблицы перед добавлением новых строк
+
     clients.forEach(client => {
         const row = document.createElement('tr');
+
+        // Если путь к фото существует, создаем <img> тег для отображения изображения
+        const photoCell = client.photo ? `<img src="./${client.photo}" width="200" height="200"/>` : 'Нет фото';
+
         row.innerHTML = `
-      <td>${client.id}</td>
-      <td>${client.lastname}</td>
-      <td>${client.firstname}</td>
-      <td>${client.surname}</td>
-      <td>${client.dateOfBirth}</td>
-      <td>${client.passportSeries}</td>
-      <td>${client.passportNumber}</td>
-      <td>${client.dateOfIssue}</td>
-      <td>${client.issueBy}</td>
-      <td>${client.photo}</td>
-    `;
-        clientTableBody.appendChild(row);
+            <td>${client.id}</td>
+            <td>${client.lastname}</td>
+            <td>${client.firstname}</td>
+            <td>${client.surname}</td>
+            <td>${client.dateOfBirth}</td>
+            <td>${client.passportSeries}</td>
+            <td>${client.passportNumber}</td>
+            <td>${client.dateOfIssue}</td>
+            <td>${client.issueBy}</td>
+            <td>${photoCell}</td>  <!-- Здесь добавляется фото -->
+        `;
+
+        clientTableBody.appendChild(row);  // Добавляем строку в таблицу
+        console.log(photoCell)
     });
 }
+
 async function fetchClients() {
     try {
         const response = await axios.get('http://localhost:8080/api/clients');

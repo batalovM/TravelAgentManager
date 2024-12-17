@@ -1,10 +1,845 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head id = "director">
     <meta charset="UTF-8">
-    <title>director</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+    <title>Управление Туристическим Агентством</title>
 </head>
 <body>
 
+<h1>Управление Туристическим Агентством</h1>
+
+<nav>
+    <ul>
+        <li><a href="#" onclick="showSection('clientsSection')">Клиенты</a></li>
+        <li><a href="#" onclick="showSection('employeesSection')">Сотрудники</a></li>
+        <li><a href="#" onclick="showSection('excursionProgramSection')">Программы экскурсий</a></li>
+        <li><a href="#" onclick="showSection('tripSection')">Поездки</a></li>
+        <li><a href="#">Справочники</a>
+            <ul>
+                <li><a href="#" onclick="showSection('routeSection')">Маршруты</a></li>
+                <li><a href="#" onclick="showSection('citySection')">Города</a></li>
+                <li><a href="#" onclick="showSection('hotelSection')">Отели</a></li>
+            </ul>
+        </li>
+        <li><a href="#" onclick="showSection('documentsSection')">Документы</a></li>
+        <li><a href="#">Разное</a>
+            <ul>
+                <li><a href="#" onclick="showSection('settingsSection')">Настройки</a></li>
+                <li><a href="#" onclick="showSection('changePasswordSection')">Сменить пароль</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Справка</a>
+            <ul>
+                <li><a href="#" onclick="showSection('contentSection')">Содержание</a></li>
+                <li><a href="#" onclick="showSection('aboutSection')">О программе</a></li>
+            </ul>
+        </li>
+        <div class="logout">
+            <a href="http://localhost:8080/" id="logoutButton">
+                <span>Выход</span>
+                <img src="./logout.svg" alt="Logout" class="logout-icon">
+            </a>
+        </div>
+    </ul>
+</nav>
+
+<!-- Секция клиентов -->
+<section class="section active" id="clientsSection" aria-labelledby="clientsSectionTitle">
+    <header>
+        <h2 id="clientsSectionTitle">Управление клиентами</h2>
+    </header>
+    <div class="buttons">
+        <button id="addButton" onclick="openModal('addModal')"  aria-label="Добавить клиента">Добавить</button>
+        <button id="updateButton" onclick="openModal('updateModal')" aria-label="Обновить клиента">Обновить</button>
+        <button id="deleteButton" onclick="openModal('deleteModal')" aria-label="Удалить клиента">Удалить</button>
+        <button id="searchButton" aria-label="Поиск клиента">Поиск</button>
+        <input type="text" id="searchInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="clientsTable" aria-describedby="clientsTableDesc">
+        <caption id="clientsTableDesc">Список клиентов</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Дата рождения</th>
+            <th>Серия паспорта</th>
+            <th>Номер паспорта</th>
+            <th>Дата выдачи</th>
+            <th>Кем выдан</th>
+            <th>Фото</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные клиентов будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления -->
+    <div class="modal" id="addModal" role="dialog" aria-labelledby="addModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addModalTitle">Добавить клиента</h2>
+        <form id="addForm" novalidate>
+            <fieldset>
+                <legend>Данные клиента</legend>
+                <input type="text" id="addLastname" placeholder="Фамилия" required>
+                <input type="text" id="addFirstname" placeholder="Имя" required>
+                <input type="text" id="addSurname" placeholder="Отчество">
+                <input type="date" id="addDateOfBirth" required>
+                <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required pattern="\d{4}">
+                <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required pattern="\d{6}">
+                <input type="date" id="addDateOfIssue" required>
+                <input type="text" id="addIssueBy" placeholder="Кем выдан" required>
+                <input type="text" id="addPhoto" placeholder="Фото">
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления -->
+    <div class="modal" id="updateModal" role="dialog" aria-labelledby="updateModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateModalTitle">Обновить клиента</h2>
+        <div id="step1">
+            <form id="fetchClientForm" novalidate>
+                <input type="number" id="fetchClientId" placeholder="Введите ID клиента" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="step2" style="display: none;">
+            <form id="updateForm" novalidate>
+                <fieldset>
+                    <legend>Данные клиента</legend>
+                    <input type="text" id="updateLastname" placeholder="Фамилия">
+                    <input type="text" id="updateFirstname" placeholder="Имя">
+                    <input type="text" id="updateSurname" placeholder="Отчество">
+                    <input type="date" id="updateDateOfBirth">
+                    <input type="text" id="updatePassportSeries" placeholder="Серия паспорта">
+                    <input type="text" id="updatePassportNumber" placeholder="Номер паспорта">
+                    <input type="date" id="updateDateOfIssue">
+                    <input type="text" id="updateIssueBy" placeholder="Кем выдан">
+                    <input type="text" id="updatePhoto" placeholder="Фото">
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления -->
+    <div class="modal" id="deleteModal" role="dialog" aria-labelledby="deleteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteModalTitle">Удалить клиента</h2>
+        <form id="deleteForm" novalidate>
+            <input type="number" id="deleteId" placeholder="ID клиента" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!-- Секция сотрудников -->
+<section class="section active" id="employeesSection" aria-labelledby="employeesSectionTitle">
+    <header>
+        <h2 id="employeesSectionTitle">Управление сотрудниками</h2>
+    </header>
+    <div class="buttons">
+        <button id="addEmployeeButton" onclick="openModal('addEmployeeModal')" aria-label="Добавить сотрудника">Добавить</button>
+        <button id="updateEmployeeButton" onclick="openModal('updateEmployeeModal')" aria-label="Обновить сотрудника">Обновить</button>
+        <button id="deleteEmployeeButton"  onclick="openModal('deleteEmployeeModal')" aria-label="Удалить сотрудника">Удалить</button>
+        <button id="searchEmployeeButton" aria-label="Поиск сотрудника">Поиск</button>
+        <input type="text" id="searchEmployeeInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="employeesTable" aria-describedby="employeesTableDesc">
+        <caption id="employeesTableDesc">Список сотрудников</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные сотрудников будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayEmployee" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления сотрудника -->
+    <div class="modal" id="addEmployeeModal" role="dialog" aria-labelledby="addEmployeeModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addEmployeeModalTitle">Добавить сотрудника</h2>
+        <form id="addEmployeeForm" novalidate>
+            <fieldset>
+                <legend>Данные сотрудника</legend>
+                <input type="text" id="addEmployeeLastName" placeholder="Фамилия" required>
+                <input type="text" id="addEmployeeFirstName" placeholder="Имя" required>
+                <input type="text" id="addEmployeeSurName" placeholder="Отчество">
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления сотрудника -->
+    <div class="modal" id="updateEmployeeModal" role="dialog" aria-labelledby="updateEmployeeModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateEmployeeModalTitle">Обновить сотрудника</h2>
+        <div id="fetchEmployeeStep">
+            <form id="fetchEmployeeForm" novalidate>
+                <input type="number" id="fetchEmployeeId" placeholder="Введите ID сотрудника" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateEmployeeStep" style="display: none;">
+            <form id="updateEmployeeForm" novalidate>
+                <fieldset>
+                    <legend>Данные сотрудника</legend>
+                    <input type="text" id="updateEmployeeLastName" placeholder="Фамилия">
+                    <input type="text" id="updateEmployeeFirstName" placeholder="Имя">
+                    <input type="text" id="updateEmployeeSurName" placeholder="Отчество">
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления сотрудника -->
+    <div class="modal" id="deleteEmployeeModal" role="dialog" aria-labelledby="deleteEmployeeModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteEmployeeModalTitle">Удалить сотрудника</h2>
+        <form id="deleteEmployeeForm" novalidate>
+            <input type="number" id="deleteEmployeeId" placeholder="ID сотрудника" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!-- Секция Экскурсионной программы -->
+<section class="section active" id="excursionProgramSection" aria-labelledby="excursionProgramSectionTitle">
+    <header>
+        <h2 id="excursionProgramSectionTitle">Экскурсионная программа</h2>
+    </header>
+    <div class="buttons">
+        <button id="addExcursionProgramButton" onclick="openModal('addExcursionProgramModal')"  aria-label="Добавить экскурсионную программу">Добавить</button>
+        <button id="updateExcursionProgramButton" onclick="openModal('updateExcursionProgramModal')"  aria-label="Обновить экскурсионную программу">Обновить</button>
+        <button id="deleteExcursionProgramButton" onclick="openModal('deleteExcursionProgramModal')"  aria-label="Удалить экскурсионную программу">Удалить</button>
+        <button id="searchExcursionProgramButton" aria-label="Поиск экскурсионной программы">Поиск</button>
+        <input type="text" id="searchExcursionProgramInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="excursionProgramTable" aria-describedby="excursionProgramTableDesc">
+        <caption id="excursionProgramTableDesc">Список экскурсионных программ</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название экскурсионной программы</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные экскурсионных программ будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayExcursionProgram" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления экскурсионной программы -->
+    <div class="modal" id="addExcursionProgramModal" role="dialog" aria-labelledby="addExcursionProgramModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addExcursionProgramModalTitle">Добавить экскурсионную программу</h2>
+        <form id="addExcursionProgramForm" novalidate>
+            <fieldset>
+                <legend>Данные экскурсионной программы</legend>
+                <input type="text" id="addExcursionProgramName" placeholder="Название экскурсионной программы" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления экскурсионной программы -->
+    <div class="modal" id="updateExcursionProgramModal" role="dialog" aria-labelledby="updateExcursionProgramModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateExcursionProgramModalTitle">Обновить экскурсионную программу</h2>
+        <div id="fetchExcursionProgramStep">
+            <form id="fetchExcursionProgramForm" novalidate>
+                <input type="number" id="fetchExcursionProgramId" placeholder="Введите ID экскурсионной программы" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateExcursionProgramStep" style="display: none;">
+            <form id="updateExcursionProgramForm" novalidate>
+                <fieldset>
+                    <legend>Данные экскурсионной программы</legend>
+                    <input type="text" id="updateExcursionProgramName" placeholder="Название экскурсионной программы" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления экскурсионной программы -->
+    <div class="modal" id="deleteExcursionProgramModal" role="dialog" aria-labelledby="deleteExcursionProgramModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteExcursionProgramModalTitle">Удалить экскурсионную программу</h2>
+        <form id="deleteExcursionProgramForm" novalidate>
+            <input type="number" id="deleteExcursionProgramId" placeholder="ID экскурсионной программы" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция поездок -->
+<section class="section active" id="tripSection" aria-labelledby="tripSectionTitle">
+    <header>
+        <h2 id="tripSectionTitle">Управление поездками</h2>
+    </header>
+    <div class="buttons">
+        <button id="addTripButton" onclick="openModal('addTripModal')"  aria-label="Добавить поездку">Добавить</button>
+        <button id="updateTripButton" onclick="openModal('updateTripModal')"  aria-label="Обновить поездку">Обновить</button>
+        <button id="deleteTripButton" onclick="openModal('deleteTripModal')"  aria-label="Удалить поездку">Удалить</button>
+        <button id="searchTripButton" aria-label="Поиск поездки">Поиск</button>
+        <input type="text" id="searchTripInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="tripTable" aria-describedby="tripTableDesc">
+        <caption id="tripTableDesc">Список поездок</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Стоимость поездки</th>
+            <th>ID сотрудника</th>
+            <th>ID маршрута</th>
+            <th>Время отправления</th>
+            <th>Время прибытия</th>
+            <th>Количество туристов</th>
+            <th>Размер штрафа</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные поездок будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayTrip" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления поездки -->
+    <div class="modal" id="addTripModal" role="dialog" aria-labelledby="addTripModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addTripModalTitle">Добавить поездку</h2>
+        <form id="addTripForm" novalidate>
+            <fieldset>
+                <legend>Данные поездки</legend>
+                <input type="number" id="addTripId" placeholder="ID поездки" required>
+                <input type="number" id="addTripCost" placeholder="Стоимость поездки" step="0.01" required>
+                <input type="number" id="addEmployeeId" placeholder="Имя сотрудника" required>
+                <input type="number" id="addRoutesId" placeholder="ID маршрута" required>
+                <input type="datetime-local" id="addDepartureTime" required>
+                <input type="time" id="addArrivalTime" required>
+                <input type="number" id="addTouristCount" placeholder="Количество туристов" required>
+                <input type="number" id="addPenaltySize" placeholder="Размер штрафа" step="0.01" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления поездки -->
+    <div class="modal" id="updateTripModal" role="dialog" aria-labelledby="updateTripModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateTripModalTitle">Обновить поездку</h2>
+        <div id="fetchTripStep">
+            <form id="fetchTripForm" novalidate>
+                <input type="number" id="fetchTripId" placeholder="Введите ID поездки" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateTripStep" style="display: none;">
+            <form id="updateTripForm" novalidate>
+                <fieldset>
+                    <legend>Данные поездки</legend>
+                    <input type="number" id="updateTripId" placeholder="ID поездки" required>
+                    <input type="number" id="updateTripCost" placeholder="Стоимость поездки" step="0.01" required>
+                    <input type="number" id="updateEmployeeId" placeholder="ID сотрудника" required>
+                    <input type="number" id="updateRoutesId" placeholder="ID маршрута" required>
+                    <input type="datetime-local" id="updateDepartureTime" required>
+                    <input type="time" id="updateArrivalTime" required>
+                    <input type="number" id="updateTouristCount" placeholder="Количество туристов" required>
+                    <input type="number" id="updatePenaltySize" placeholder="Размер штрафа" step="0.01" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления поездки -->
+    <div class="modal" id="deleteTripModal" role="dialog" aria-labelledby="deleteTripModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteTripModalTitle">Удалить поездку</h2>
+        <form id="deleteTripForm" novalidate>
+            <input type="number" id="deleteTripId" placeholder="ID поездки" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция маршрутов -->
+<section class="section active" id="routeSection" aria-labelledby="routeSectionTitle">
+    <header>
+        <h2 id="routeSectionTitle">Управление маршрутами</h2>
+    </header>
+    <div class="buttons">
+        <button id="addRouteButton" onclick="openModal('addRouteModal')" aria-label="Добавить маршрут">Добавить</button>
+        <button id="updateRouteButton" onclick="openModal('updateRouteModal')" aria-label="Обновить маршрут">Обновить</button>
+        <button id="deleteRouteButton" onclick="openModal('deleteRouteModal')" aria-label="Удалить маршрут">Удалить</button>
+        <button id="searchRouteButton" aria-label="Поиск маршрута">Поиск</button>
+        <input type="text" id="searchRouteInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="routeTable" aria-describedby="routeTableDesc">
+        <caption id="routeTableDesc">Список маршрутов</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID страны</th>
+            <th>Название маршрута</th>
+            <th>Продолжительность (дни)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные маршрутов будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayRoute" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления маршрута -->
+    <div class="modal" id="addRouteModal" role="dialog" aria-labelledby="addRouteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addRouteModalTitle">Добавить маршрут</h2>
+        <form id="addRouteForm" novalidate>
+            <fieldset>
+                <legend>Данные маршрута</legend>
+                <input type="number" id="addRouteId" placeholder="ID маршрута" required>
+                <input type="number" id="addCountryId" placeholder="ID страны" required>
+                <input type="text" id="addRouteName" placeholder="Название маршрута" required>
+                <input type="number" id="addDuration" placeholder="Продолжительность (дни)" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления маршрута -->
+    <div class="modal" id="updateRouteModal" role="dialog" aria-labelledby="updateRouteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateRouteModalTitle">Обновить маршрут</h2>
+        <div id="fetchRouteStep">
+            <form id="fetchRouteForm" novalidate>
+                <input type="number" id="fetchRouteId" placeholder="Введите ID маршрута" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateRouteStep" style="display: none;">
+            <form id="updateRouteForm" novalidate>
+                <fieldset>
+                    <legend>Данные маршрута</legend>
+                    <input type="number" id="updateRouteId" placeholder="ID маршрута" required>
+                    <input type="number" id="updateCountryId" placeholder="ID страны" required>
+                    <input type="text" id="updateRouteName" placeholder="Название маршрута" required>
+                    <input type="number" id="updateDuration" placeholder="Продолжительность (дни)" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления маршрута -->
+    <div class="modal" id="deleteRouteModal" role="dialog" aria-labelledby="deleteRouteModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteRouteModalTitle">Удалить маршрут</h2>
+        <form id="deleteRouteForm" novalidate>
+            <input type="number" id="deleteRouteId" placeholder="ID маршрута" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция городов -->
+<section class="section active" id="citySection" aria-labelledby="citySectionTitle">
+    <header>
+        <h2 id="citySectionTitle">Управление городами</h2>
+    </header>
+    <div class="buttons">
+        <button id="addCityButton" onclick="openModal('addCityModal')" aria-label="Добавить город">Добавить</button>
+        <button id="updateCityButton" onclick="openModal('updateCityModal')" aria-label="Обновить город">Обновить</button>
+        <button id="deleteCityButton" onclick="openModal('deleteCityModal')" aria-label="Удалить город">Удалить</button>
+        <button id="searchCityButton" aria-label="Поиск города">Поиск</button>
+        <input type="text" id="searchCityInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="cityTable" aria-describedby="cityTableDesc">
+        <caption id="cityTableDesc">Список городов</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID отеля</th>
+            <th>ID экскурсионной программы</th>
+            <th>Название города</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные городов будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayCity" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления города -->
+    <div class="modal" id="addCityModal" role="dialog" aria-labelledby="addCityModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addCityModalTitle">Добавить город</h2>
+        <form id="addCityForm" novalidate>
+            <fieldset>
+                <legend>Данные города</legend>
+                <input type="number" id="addCityHotel" placeholder="ID отеля" required>
+                <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required>
+                <input type="text" id="addCityName" placeholder="Название города" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления города -->
+    <div class="modal" id="updateCityModal" role="dialog" aria-labelledby="updateCityModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateCityModalTitle">Обновить город</h2>
+        <div id="fetchCityStep">
+            <form id="fetchCityForm" novalidate>
+                <input type="number" id="fetchCityId" placeholder="Введите ID города" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateCityStep" style="display: none;">
+            <form id="updateCityForm" novalidate>
+                <fieldset>
+                    <legend>Данные города</legend>
+                    <input type="number" id="updateCityId" placeholder="ID города" required>
+                    <input type="number" id="updateCityHotelId" placeholder="ID отеля" required>
+                    <input type="number" id="updateCityExcursionProgramId" placeholder="ID экскурсионной программы" required>
+                    <input type="text" id="updateCityName" placeholder="Название города" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Модальное окно для удаления города -->
+    <div class="modal" id="deleteCityModal" role="dialog" aria-labelledby="deleteCityModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteCityModalTitle">Удалить город</h2>
+        <form id="deleteCityForm" novalidate>
+            <input type="number" id="deleteCityId" placeholder="ID города" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<!--Секция отелей -->
+<section class="section active" id="hotelSection" aria-labelledby="hotelSectionTitle">
+    <header>
+        <h2 id="hotelSectionTitle">Управление отелями</h2>
+    </header>
+    <div class="buttons">
+        <button id="addHotelButton" onclick="openModal('addHotelModal')" aria-label="Добавить отель">Добавить</button>
+        <button id="updateHotelButton" onclick="openModal('updateHotelModal')" aria-label="Обновить отель">Обновить</button>
+        <button id="deleteHotelButton" onclick="openModal('deleteHotelModal')" aria-label="Удалить отель">Удалить</button>
+        <button id="searchHotelButton" aria-label="Поиск отеля">Поиск</button>
+        <input type="text" id="searchHotelInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
+    </div>
+
+    <table id="hotelTable" aria-describedby="hotelTableDesc">
+        <caption id="hotelTableDesc">Список отелей</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название отеля</th>
+            <th>Класс отеля</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Данные отелей будут загружены здесь -->
+        </tbody>
+    </table>
+
+    <div class="overlay" id="overlayHotel" aria-hidden="true"></div>
+
+    <!-- Модальное окно для добавления отеля -->
+    <div class="modal" id="addHotelModal" role="dialog" aria-labelledby="addHotelModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="addHotelModalTitle">Добавить отель</h2>
+        <form id="addHotelForm" novalidate>
+            <fieldset>
+                <legend>Данные отеля</legend>
+                <input type="text" id="addHotelName" placeholder="Название отеля" required>
+                <input type="number" id="addHotelClass" placeholder="Класс отеля" required>
+                <button type="submit">Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Модальное окно для обновления отеля -->
+    <div class="modal" id="updateHotelModal" role="dialog" aria-labelledby="updateHotelModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="updateHotelModalTitle">Обновить отель</h2>
+        <div id="fetchHotelStep">
+            <form id="fetchHotelForm" novalidate>
+                <input type="number" id="fetchHotelId" placeholder="Введите ID отеля" required>
+                <button type="submit">Загрузить данные</button>
+            </form>
+        </div>
+        <div id="updateHotelStep" style="display: none;">
+            <form id="updateHotelForm" novalidate>
+                <fieldset>
+                    <legend>Данные отеля</legend>
+                    <input type="number" id="updateHotelId" placeholder="ID отеля" required>
+                    <input type="text" id="updateHotelName" placeholder="Название отеля" required>
+                    <input type="number" id="updateHotelClass" placeholder="Класс отеля" required>
+                    <button type="submit">Обновить</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления отеля -->
+    <div class="modal" id="deleteHotelModal" role="dialog" aria-labelledby="deleteHotelModalTitle" aria-modal="true">
+        <span class="close" aria-label="Закрыть">&times;</span>
+        <h2 id="deleteHotelModalTitle">Удалить отель</h2>
+        <form id="deleteHotelForm" novalidate>
+            <input type="number" id="deleteHotelId" placeholder="ID отеля" required>
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+</section>
+
+
+<!--Секция документов -->
+<section id="documentsSection" class="section" aria-labelledby="documentsSectionTitle">
+    <header>
+        <h2 id="documentsSectionTitle">Документы</h2>
+    </header>
+
+    <div id="documents" class="content">
+        <div id="sqlInterface" class="sql-container hidden">
+            <button id="exampleQueryClients">Пример 1</button>
+            <button id="exampleQueryRoutes">Пример 2</button>
+            <button id="exampleQueryTrips">Пример 3</button>
+            <br>
+            <label for="sqlQuery">Введите ваш SQL-запрос:</label>
+            <br>
+            <textarea id="sqlQuery" placeholder="" rows="4"></textarea>
+            <button id="executeQueryButton">Выполнить</button>
+
+            <table id="resultsTable" class="hidden">
+                <thead>
+                <tr id="tableHeaders">
+                    <!-- Заголовки будут добавляться динамически -->
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Результаты запроса -->
+                </tbody>
+            </table>
+        </div>
+        <button id="toggleSQLButton">Показать/Скрыть интерфейс SQL-запросов</button>
+        <button id="saveQueryButton">Сохранить результат SQL-запроса</button>
+    </div>
+</section>
+
+
+<!-- Секция настроек -->
+<section class="section" id="settingsSection" aria-labelledby="settingsSectionTitle">
+    <header>
+        <h2 id="settingsSectionTitle">Настройки</h2>
+    </header>
+
+    <div class="settings">
+        <div class="language-settings">
+            <h3>Сменить язык интерфейса</h3>
+            <select id="languageSelect" aria-label="Выберите язык">
+                <option value="en">Английский</option>
+                <option value="ru">Русский</option>
+                <option value="fr">Французский</option>
+                <option value="de">Немецкий</option>
+            </select>
+        </div>
+
+        <div class="theme-settings">
+            <h3>Сменить тему</h3>
+            <label class="toggle">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+                <span class="label">Светлая / Темная</span>
+            </label>
+        </div>
+    </div>
+</section>
+<!--Секция смены пароля -->
+<section class="section" id="changePasswordSection" aria-labelledby="changePasswordTitle">
+    <form id="changePasswordForm">
+        <div>
+            <label for="oldPassword">Старый пароль:</label>
+            <input type="password" id="oldPassword" name="oldPassword" required>
+        </div>
+        <div>
+            <label for="newPassword">Новый пароль:</label>
+            <input type="password" id="newPassword" name="newPassword" required>
+        </div>
+        <button type="submit">Изменить пароль</button>
+    </form>
+
+    <div id="responseMessage"></div>
+</section>
+
+<script>
+    // Функция для обработки формы смены пароля
+    document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Предотвращаем перезагрузку страницы
+        const headElement = document.head;
+
+        // Получаем id элемента <head>
+        const username = headElement.id
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+
+        const requestData = {
+            username: username,
+            oldPassword: oldPassword,
+            newPassword: newPassword
+        };
+
+        fetch('/api/execute-sql/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Выводим результат
+                document.getElementById('responseMessage').innerText = data.message;
+            })
+            .catch(error => {
+                document.getElementById('responseMessage').innerText = 'Ошибка: ' + error.message;
+            });
+    });
+</script>
+
+<!--Секция содержания -->
+<section class="section" id="contentSection" aria-labelledby="contentSectionTitle">
+    <header>
+        <h2 id="contentSectionTitle">Содержание</h2>
+    </header>
+
+    <div class="content">
+        <p>
+            Это приложение предназначено для управления вашими задачами и проектами. С его помощью вы можете легко отслеживать свои задачи, устанавливать приоритеты и получать напоминания о сроках выполнения.
+        </p>
+        <p>
+            Для использования приложения выполните следующие шаги:
+        </p>
+        <ol>
+            <li>Создайте новую задачу, нажав на кнопку "Добавить задачу".</li>
+            <li>Введите название и описание задачи.</li>
+            <li>Установите приоритет и срок выполнения.</li>
+            <li>Нажмите "Сохранить", чтобы добавить задачу в список.</li>
+            <li>Отмечайте задачи как выполненные, когда они будут завершены.</li>
+        </ol>
+        <p>
+            Вы также можете редактировать и удалять задачи по мере необходимости. Приложение предоставляет удобный интерфейс для управления всеми вашими задачами в одном месте.
+        </p>
+    </div>
+</section>
+
+<!--Секция о программе -->
+<section class="section" id="aboutSection" aria-labelledby="aboutSectionTitle">
+    <header>
+        <h2 id="aboutSectionTitle">О программе</h2>
+    </header>
+
+    <div class="about">
+        <p>
+            Текущая версия приложения: <strong>1.0.0</strong>
+        </p>
+        <p>
+            Это курсовой проект, разработанный <strong>Баталовым Максимом</strong>, студентом группы <strong>АВТ-214</strong>.
+        </p>
+        <p>
+            Проект выполнен по дисциплине <strong>Базы данных</strong>.
+        </p>
+    </div>
+</section>
+
+
+
+
+<script src="./maiN.js"></script>
+<script src="./Client.js"></script>
+<script src="./employee.js"></script>
+<script src="./excursions.js"></script>
+<script src="./trips.js"></script>
+<script src="./routes.js"></script>
+<script src="./cities.js"></script>
+<script src="./hotels.js"></script>
+<script src="./documents.js"></script>
+<script>
+    const sqlInterface = document.getElementById("sqlInterface");
+    const toggleSQLButton = document.getElementById("toggleSQLButton");
+    const closeButtons = document.querySelectorAll('.close');
+
+    closeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var modal = button.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    function toggleSQLInterface() {
+        sqlInterface.classList.toggle('hidden');
+    }
+
+    // Обработчик кнопки "Показать/Скрыть интерфейс SQL-запросов"
+    toggleSQLButton.addEventListener('click', toggleSQLInterface);
+</script>
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Проверяем сохраненные настройки темы
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.style.backgroundColor = '#2c2c2c'; // Темный фон
+        document.body.style.color = '#f2f2f2'; // Светлый текст
+        themeToggle.checked = true;
+    }
+
+    // Обработчик изменения состояния переключателя
+    themeToggle.addEventListener('change', () => {
+        if (themeToggle.checked) {
+            document.body.style.backgroundColor = '#2c2c2c'; // Темный фон
+            document.body.style.color = '#f2f2f2'; // Светлый текст
+            localStorage.setItem('theme', 'dark'); // Сохраняем выбор в локальном хранилище
+        } else {
+            document.body.style.backgroundColor = ''; // Светлый фон (по умолчанию)
+            document.body.style.color = ''; // Темный текст (по умолчанию)
+            localStorage.setItem('theme', 'light'); // Сохраняем выбор в локальном хранилище
+        }
+    });
+</script>
 </body>
 </html>

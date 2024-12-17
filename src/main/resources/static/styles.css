@@ -1,106 +1,340 @@
-/* Основные стили */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
+    margin: 20px;
+}
+/* Стиль для кнопок */
+.buttons button {
+    background-color: #4a4a4a;
+    color: #f2f2f2;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-h1 {
-    color: #333;
-    text-align: center;
+.buttons button:hover {
+    background-color: #616161; /* Более светлый оттенок серого при наведении */
+    transform: scale(1.05); /* Легкое увеличение кнопки при наведении */
+}
+
+.buttons button:active {
+    background-color: #383838; /* Еще более темный оттенок при нажатии */
+}
+/* Общие стили для nav */
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #696969;
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+    animation: fadeIn 0.4s ease;
+}
+
+/* Анимация для появления nav */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Стили для списка */
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px; /* Расстояние между элементами */
+}
+
+/* Стили для элементов списка */
+nav ul li {
+    position: relative;
+}
+
+/* Стили для ссылок в меню */
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Эффект при наведении на ссылки */
+nav ul li a:hover {
+    background-color: #555;
+    transform: scale(1.05); /* Легкое увеличение при наведении */
+}
+
+/* Стили для вложенного списка (подменю) */
+nav ul li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #444;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+/* Показать подменю при наведении на родительский элемент */
+nav ul li:hover ul {
+    display: block;
+}
+
+/* Стили для ссылок в подменю */
+nav ul li ul li a {
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Эффект при наведении на ссылки в подменю */
+nav ul li ul li a:hover {
+    background-color: #666;
+    transform: scale(1.05); /* Легкое увеличение при наведении */
+}
+
+/* Стили для кнопки выхода (logout) */
+.logout {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+/* Стили для ссылки в блоке logout */
+.logout a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Эффект при наведении на ссылку logout */
+.logout a:hover {
+    background-color: #555;
+    transform: scale(1.05); /* Легкое увеличение при наведении */
+}
+
+/* Иконка выхода */
+.logout-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 0.5rem;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
-
 table, th, td {
-    border: 1px solid #ddd;
+    border: 1px solid black;
 }
-
 th, td {
     padding: 10px;
     text-align: left;
 }
-
-th {
-    background-color: #f2f2f2;
-}
-
-/* Стили кнопок */
-button {
-    padding: 10px 15px;
-    margin: 10px 0;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#loadingSpinner {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 50px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-.button-container {
-    display: flex;              /* Используем flexbox */
-    gap: 10px;                  /* Промежуток между кнопками */
-}
-
-.button-container button {
-    padding: 10px 20px;         /* Паддинг для кнопок */
-    font-size: 16px;            /* Размер шрифта */
-    cursor: pointer;           /* Курсор как указатель */
-}
-/* Стили для модального окна */
+/* Стиль для модальных окон */
 .modal {
-    display: none; /* Скрыто по умолчанию */
+    display: none;
     position: fixed;
-    z-index: 1;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    color: #f2f2f2;
+    padding: 20px;
+    border-radius: 8px; /* Скругление углов */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Тень для модального окна */
+    z-index: 1000;
+    max-width: 500px;
+    width: 100%;
+    animation: fadeIn 0.4s ease;
+    box-sizing: border-box; /* Для учета padding в ширине */
+}
+
+/* Анимация появления модального окна */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Закрытие модального окна */
+.modal .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #f2f2f2;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal .close:hover {
+    color: #ff5757; /* Цвет при наведении на кнопку закрытия */
+}
+
+/* Стили для оверлея */
+.overlay {
+    display: none;
+    position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.7); /* Темный фон для оверлея */
+    z-index: 999;
+    animation: fadeInOverlay 0.4s ease;
 }
 
-.modal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 30%;
-    border-radius: 10px;
-}
-.modal-content label,
-.modal-content input {
-    display: block; /* Каждый элемент занимает всю ширину строки */
-    width: 100%; /* Поля ввода занимают всю ширину контейнера */
-    margin-bottom: 10px; /* Отступ между полями */
+/* Анимация появления оверлея */
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+/* Стили для форм в модальных окнах */
+.modal form {
+    width: 100%;
+    max-width: 460px; /* Ограничиваем форму, чтобы она не растягивалась */
+    margin: 0 auto;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
+/* Поля ввода */
+.modal input, .modal button {
+    width: 100%;
+    max-width: 100%; /* Ограничиваем ширину полей */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #4a4a4a;
+    background-color: #4a4a4a;
+    color: #f2f2f2;
+    box-sizing: border-box; /* Учитываем padding внутри ширины */
+}
+
+/* Кнопки в модальных окнах */
+.modal button {
+    background-color: #616161;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal button:hover {
+    background-color: #767676;
+}
+
+/* Адаптивность для мелких экранов */
+@media (max-width: 600px) {
+    .modal {
+        max-width: 90%; /* Меньший размер для экранов мобильных устройств */
+        padding: 15px;
+    }
+
+    .modal input, .modal button {
+        font-size: 14px; /* Уменьшаем шрифт на мобильных */
+    }
+}
+
+.hidden { display: none; }
+
+/* Когда поле поиска активно, показываем его */
+#searchInput.show {
+    display: block;
+    width: 200px; /* Даем ширину при активации */
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Плавное изменение фона при фокусе */
+#searchInput:focus {
+    border-color: #4a4a4a; /* Изменение цвета границы при фокусе */
+    background-color: #e6e6e6; /* Легкое изменение фона */
+}
+
+/* Плавное изменение фона при наведении */
+#searchInput:hover {
+    background-color: #e6e6e6;
+}
+
+/* Стили для placeholder */
+#searchInput::placeholder {
+    color: #888;
+    font-style: italic;
+}
+
+/* Эффект при наведении на иконку */
+#searchInput:focus + #searchIcon {
+    color: #4a4a4a;
+}
+input { width: 200px; }
+
+
+
+
+/* Стили для переключателя */
+.toggle {
+    display: flex;
+    align-items: center;
     cursor: pointer;
 }
 
+.toggle input {
+    display: none;
+}
 
+.slider {
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    position: relative;
+    transition: background-color 0.3s;
+}
 
+.slider:before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: white;
+    transition: transform 0.3s;
+}
 
+input:checked + .slider {
+    background-color: #4CAF50; /* Цвет для темной темы */
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.label {
+    margin-left: 10px;
+}

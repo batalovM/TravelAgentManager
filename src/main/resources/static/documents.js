@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const executeQueryButton = document.getElementById("executeQueryButton");
     const saveQueryButton = document.getElementById("saveQueryButton");
 
-    // Выполнение SQL-запроса
+
     executeQueryButton.addEventListener("click", async () => {
         const query = document.getElementById("sqlQuery").value.trim();
         if (!query) {
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Отображение результатов в таблице
+
     function renderResultsTable(data) {
         const table = document.getElementById("resultsTable");
         const tableHeaders = document.getElementById("tableHeaders");

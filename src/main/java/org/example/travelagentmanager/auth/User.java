@@ -15,11 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private String id;
+    private int id;
     private String username;
     private String password;
     private String role;
+    
+    public User(String username, String password) {
+    }
 
-    public User(String admin, String s, String admin1) {
+    public User(String admin, String password, String roleAdmin) {
     }
 }

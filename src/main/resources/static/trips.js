@@ -160,11 +160,11 @@ const searchTripButton = document.getElementById('searchTripButton');
 const searchTripInput = document.getElementById('searchTripInput');
 
 // Обработка поиска сотрудников
-searchTripInput.addEventListener("click", function () {
+searchTripButton.addEventListener("click", function () {
     searchTripInput.style.display = searchTripInput.style.display === "none" ? "block" : "none";
 });
 
-searchTripButton.addEventListener("input", function () {
+searchTripInput.addEventListener("input", function () {
     const searchTerm = searchTripInput.value.toLowerCase();
     const rows = tripTableBody.querySelectorAll("tr");
 
