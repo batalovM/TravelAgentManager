@@ -1,5 +1,6 @@
 package org.example.travelagentmanager.controllers;
 
+import org.example.travelagentmanager.model.Client;
 import org.example.travelagentmanager.model.Country;
 import org.example.travelagentmanager.model.ExcursionProgram;
 import org.example.travelagentmanager.repository.ExcursionRepository;
@@ -46,13 +47,11 @@ public class ExcursionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(excursion);
     }
     // Обновление экскурсии
+    // Обновить клиента
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateExcursion(@PathVariable Long id, @RequestBody ExcursionProgram excursion) {
-        int rowsUpdated = excursionRepository.update(id, excursion);
-        if (rowsUpdated > 0) {
-            return ResponseEntity.ok("Excursion updated successfully.");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Excursion not found.");
+    public ResponseEntity<ExcursionProgram> updateExcursion(@PathVariable int id, @RequestBody ExcursionProgram excursionProgram) {
+        excursionRepository.update(id, excursionProgram);
+        return ResponseEntity.ok(excursionProgram);
     }
 
     // Удаление экскурсии

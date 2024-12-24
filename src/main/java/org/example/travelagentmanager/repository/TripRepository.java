@@ -23,40 +23,34 @@ public class TripRepository implements TripRep {
     public TripRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    private static final RowMapper<Trip> tripRowMapper = new RowMapper<>() {
-        @Override
-        public Trip mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Trip trip = new Trip();
-            trip.setId(rs.getInt("id"));
-            trip.setTripCost(rs.getBigDecimal("tripcost"));
-            trip.setEmployeeId(rs.getInt("employeeid"));
-            trip.setRoutesId(rs.getInt("routesid"));
-            trip.setDepartureTime(rs.getDate("departuretime"));
-            trip.setArrivalTime(rs.getDate("arrivaldate"));
-            trip.setTouristCount(rs.getInt("touristcount"));
-            trip.setPenaltySize(rs.getBigDecimal("penaltysize"));
-            return trip;
-        }
+    private static final RowMapper<Trip> tripRowMapper = (rs, rowNum) -> {
+        Trip trip = new Trip();
+        trip.setId(rs.getInt("id"));
+        trip.setTripCost(rs.getBigDecimal("tripcost"));
+        trip.setEmployeeId(rs.getInt("employeeid"));
+        trip.setRoutesId(rs.getInt("routesid"));
+        trip.setDepartureTime(rs.getDate("departuretime"));
+        trip.setArrivalTime(rs.getDate("arrivaldate"));
+        trip.setTouristCount(rs.getInt("touristcount"));
+        trip.setPenaltySize(rs.getBigDecimal("penaltysize"));
+        return trip;
     };
-    private static final RowMapper<Trip> tripRowMapperUpt = new RowMapper<>() {
-        @Override
-        public Trip mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Trip trip = new Trip();
-            trip.setId(rs.getInt("id"));
-            trip.setTripCost(rs.getBigDecimal("tripcost"));
-            String fullName = rs.getString("lastname") + " " +
-                    rs.getString("firstname") + " " +
-                    rs.getString("surname");
-            trip.setEmployeeFullName(fullName);
-            trip.setRouteName(rs.getString("routename"));
-            //trip.setEmployeeId(rs.getInt("employeeid"));
-            //trip.setRoutesId(rs.getInt("routesid"));
-            trip.setDepartureTime(rs.getDate("departuretime"));
-            trip.setArrivalTime(rs.getDate("arrivaldate"));
-            trip.setTouristCount(rs.getInt("touristcount"));
-            trip.setPenaltySize(rs.getBigDecimal("penaltysize"));
-            return trip;
-        }
+    private static final RowMapper<Trip> tripRowMapperUpt = (rs, rowNum) -> {
+        Trip trip = new Trip();
+        trip.setId(rs.getInt("id"));
+        trip.setTripCost(rs.getBigDecimal("tripcost"));
+        String fullName = rs.getString("lastname") + " " +
+                rs.getString("firstname") + " " +
+                rs.getString("surname");
+        trip.setEmployeeFullName(fullName);
+        trip.setRouteName(rs.getString("routename"));
+        //trip.setEmployeeId(rs.getInt("employeeid"));
+        //trip.setRoutesId(rs.getInt("routesid"));
+        trip.setDepartureTime(rs.getDate("departuretime"));
+        trip.setArrivalTime(rs.getDate("arrivaldate"));
+        trip.setTouristCount(rs.getInt("touristcount"));
+        trip.setPenaltySize(rs.getBigDecimal("penaltysize"));
+        return trip;
     };
 
     @Override
@@ -79,17 +73,17 @@ public class TripRepository implements TripRep {
 
     @Override
     public void save(Trip trip) {
-        String sql = "INSERT INTO trips (id, tripcost, employeeid, routesid, departuretime, " +
+        String sql = "INSERT INTO trips (tripcost, employeeid, routesid, departuretime, " +
                 "arrivaldate, touristcount, penaltysize) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
-                trip.getId(),
                 trip.getTripCost(),
                 trip.getEmployeeId(),
                 trip.getRoutesId(),
                 trip.getDepartureTime(),
                 trip.getArrivalTime(),
+                trip.getTouristCount(),
                 trip.getPenaltySize());
     }
 

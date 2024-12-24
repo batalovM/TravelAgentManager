@@ -73,6 +73,7 @@ async function updateExcursion(excursion, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchExcursion()
 }
 
 async function deleteExcursion(id) {
@@ -92,7 +93,7 @@ updateExcursionForm.addEventListener('submit', async (e) => {
         excursionProgramName: updateExcursionProgramName.value,
     };
     updateExcursion(updatedExcursion, excursionId);
-    fetchExcursion();
+   fetchExcursion();
 });
 
 

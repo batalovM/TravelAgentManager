@@ -53,12 +53,12 @@
         <button id="addButton" onclick="openModal('addModal')" aria-label="Добавить клиента">Добавить</button>
         <button id="updateButton" onclick="openModal('updateModal')" hidden="hidden" aria-label="Обновить клиента">Обновить</button>
         <button id="deleteButton" onclick="openModal('deleteModal')" hidden="hidden" aria-label="Удалить клиента">Удалить</button>
-        <button id="searchButton" aria-label="Поиск клиента">Поиск</button>
+        <button id="searchButton" hidden="hidden" aria-label="Поиск клиента">Поиск</button>
         <br>
         <input type="text" id="searchInput" placeholder="Введите текст для поиска" style="display: none;" aria-label="Поиск">
     </div>
 
-    <table id="clientsTable" aria-describedby="clientsTableDesc">
+    <table id="clientsTable" hidden="hidden" aria-describedby="clientsTableDesc">
         <caption id="clientsTableDesc">Список клиентов</caption>
         <thead>
         <tr>
@@ -88,15 +88,16 @@
         <form id="addForm" novalidate>
             <fieldset>
                 <legend>Данные клиента</legend>
-                <input type="text" id="addLastname" placeholder="Фамилия" required>
-                <input type="text" id="addFirstname" placeholder="Имя" required>
-                <input type="text" id="addSurname" placeholder="Отчество">
-                <input type="date" id="addDateOfBirth" required>
-                <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required pattern="\d{4}">
-                <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required pattern="\d{6}">
-                <input type="date" id="addDateOfIssue" required>
-                <input type="text" id="addIssueBy" placeholder="Кем выдан" required>
-                <input type="text" id="addPhoto" placeholder="Фото">
+                <legend>Данные клиента</legend>
+                <input type="text" id="addLastname" placeholder="Фамилия" required value="Иванов">
+                <input type="text" id="addFirstname" placeholder="Имя" required value="Иван">
+                <input type="text" id="addSurname" placeholder="Отчество" value="Иванович">
+                <input type="date" id="addDateOfBirth" required value="1990-01-01">
+                <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required pattern="\d{4}" value="1234">
+                <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required pattern="\d{6}" value="567890">
+                <input type="date" id="addDateOfIssue" required value="2022-02-22">
+                <input type="text" id="addIssueBy" placeholder="Кем выдан" required value="ОВД города Москвы">
+                <input type="text" id="addPhoto" placeholder="Фото" value="photo.jpg">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -589,15 +590,6 @@
     </header>
 
     <div class="settings">
-        <div class="language-settings">
-            <h3>Сменить язык интерфейса</h3>
-            <select id="languageSelect" aria-label="Выберите язык">
-                <option value="en">Английский</option>
-                <option value="ru">Русский</option>
-                <option value="fr">Французский</option>
-                <option value="de">Немецкий</option>
-            </select>
-        </div>
 
         <div class="theme-settings">
             <h3>Сменить тему</h3>

@@ -40,7 +40,7 @@ public class ExcursionRepository {
     }
 
     // Обновление экскурсии
-    public int update(Long id, ExcursionProgram excursion) {
+    public int update(int id, ExcursionProgram excursion) {
         String sql = "UPDATE excursionprogram SET excursionProgramName = ? WHERE id = ?";
         return jdbcTemplate.update(sql, excursion.getExcursionProgramName(), id);
     }

@@ -32,6 +32,14 @@ public class CityRepository implements CityRep {
         city.setCityName(rs.getString("cityName"));
         return city;
     };
+    private static final RowMapper<City> cityRowMapperUpt = ((rs, rowNum) -> {
+        City city = new City();
+        city.setId(rs.getInt("id"));
+        city.setHotelName(rs.getString("hotel_name"));
+        city.setExcursionProgramName(rs.getString("excursion_program_name"));
+        city.setCityName(rs.getString("cityName"));
+        return city;
+    });
 
     @Override
     public Optional<City> findById(int id) {
@@ -41,8 +49,18 @@ public class CityRepository implements CityRep {
 
     @Override
     public List<City> findAll() {
-        String sql = "select * from city";
-        return jdbcTemplate.query(sql, cityRowMapper);
+        String sql = "SELECT \n" +
+                "    city.id,\n" +
+                "    hotel.hotelname AS hotel_name,\n" +
+                "    excursionprogram.excursionprogramname AS excursion_program_name,\n" +
+                "    city.cityname\n" +
+                "FROM \n" +
+                "    city\n" +
+                "LEFT JOIN \n" +
+                "    hotel ON city.hotelid = hotel.id\n" +
+                "LEFT JOIN \n" +
+                "    excursionprogram ON city.excursionprogramid = excursionprogram.id;\n";
+        return jdbcTemplate.query(sql, cityRowMapperUpt);
     }
 
     @Override

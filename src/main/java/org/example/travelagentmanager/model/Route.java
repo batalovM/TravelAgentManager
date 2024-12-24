@@ -16,6 +16,7 @@ import lombok.Setter;
 public class Route {
     private int id;
     private int countryId;
+    private String countryName;
     private String routeName;
     private int duration;
 }

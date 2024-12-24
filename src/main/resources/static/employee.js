@@ -10,7 +10,7 @@ const deleteEmployeeModal = document.getElementById('deleteEmployeeModal');
 
 const updateEmployeeLastname = document.getElementById('updateEmployeeLastName');
 const updateEmployeeFirstname = document.getElementById('updateEmployeeFirstName');
-const updateEmployeeSurname = document.getElementById('updateEmployeeSurname');
+const updateEmployeeSurname = document.getElementById('updateEmployeeSurName');
 
 
 function displayEmployees(employees) {
@@ -56,10 +56,10 @@ async function addEmployee(event) {
             body: JSON.stringify(newEmployee)
         })
         // Обновляем таблицу клиентов
-        fetchEmployees();
     } catch (error) {
         console.error('Ошибка во время добавления:', error);
     }
+    await fetchEmployees();
 }
 
 async function updateEmployee(employee, id) {
@@ -79,6 +79,7 @@ async function updateEmployee(employee, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchEmployees();
 }
 
 async function deleteEmployee(id) {
@@ -87,6 +88,7 @@ async function deleteEmployee(id) {
     } catch (error) {
         console.error('Error deleting employee:', error);
     }
+    await fetchEmployees();
 }
 
 addEmployeeForm.addEventListener('submit', addEmployee);
@@ -99,6 +101,9 @@ updateEmployeeForm.addEventListener('submit', async (e) => {
         firstName: updateEmployeeFirstname.value,
         surName: updateEmployeeSurname.value,
     };
+    console.log(updatedEmployee.firstName)
+    console.log(updatedEmployee.lastName)
+    console.log(updatedEmployee.surName)
     updateEmployee(updatedEmployee, employeeId);
     fetchEmployees();
 });

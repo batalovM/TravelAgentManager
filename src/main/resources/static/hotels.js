@@ -1,5 +1,5 @@
 const hotelTableBody = document.querySelector('#hotelTable tbody');
-const addHotelForm = document.querySelector('#addForm');
+const addHotelForm = document.querySelector('#addHotelForm');
 const fetchHotelForm = document.getElementById('fetchHotelForm');
 const fetchHotelId = document.getElementById('fetchHotelId');
 const updateHotelForm = document.querySelector('#updateHotelForm');
@@ -52,11 +52,10 @@ async function addHotel(event) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newHotel)
         })
-        // Обновляем таблицу клиентов
-        fetchHotels();
     } catch (error) {
         console.error('Ошибка во время добавления:', error);
     }
+    await fetchHotels()
 }
 
 async function updateHotel(hotel, id) {
@@ -76,6 +75,7 @@ async function updateHotel(hotel, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchHotels()
 }
 
 async function deleteHotel(id) {
@@ -84,6 +84,7 @@ async function deleteHotel(id) {
     } catch (error) {
         console.error('Error deleting hotel:', error);
     }
+    await fetchHotels()
 }
 
 addHotelForm.addEventListener('submit', addClient);
@@ -106,7 +107,7 @@ fetchHotelForm.addEventListener('submit', async (event) => {
     const hotelId = fetchHotelId.value;
 
     try {
-        const response = await fetch(`http://localhost:8080/api/clients/${clientId}`);
+        const response = await fetch(`http://localhost:8080/api/hotel/${hotelId}`);
         if (!response.ok) {
             throw new Error('Отель не найден');
         }
@@ -120,6 +121,7 @@ fetchHotelForm.addEventListener('submit', async (event) => {
     } catch (error) {
         alert(error.message);
     }
+    await fetchHotels()
 });
 
 deleteHotelForm.addEventListener('submit', async (e) => {
@@ -133,7 +135,7 @@ deleteHotelForm.addEventListener('submit', async (e) => {
 // Fetch clients when the page loads
 fetchHotels();
 
-
+addHotelForm.addEventListener('submit', addHotel)
 
 
 const searchHotelButton = document.getElementById('searchHotelButton');

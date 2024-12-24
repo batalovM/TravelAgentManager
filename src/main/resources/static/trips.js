@@ -69,10 +69,10 @@ async function addTrips(event) {
             body: JSON.stringify(newTrip)
         })
         // Обновляем таблицу клиентов
-        fetchTrips();
     } catch (error) {
         console.error('Ошибка во время добавления:', error);
     }
+    await fetchTrips();
 }
 
 async function updateTrip(trip, id) {
@@ -92,6 +92,7 @@ async function updateTrip(trip, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchTrips();
 }
 
 async function deleteTrip(id) {
@@ -100,6 +101,7 @@ async function deleteTrip(id) {
     } catch (error) {
         console.error('Error deleting trip:', error);
     }
+    await fetchTrips();
 }
 
 addTripForm.addEventListener('submit', addTrips);

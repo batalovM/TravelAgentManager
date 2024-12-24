@@ -17,5 +17,7 @@ public class City {
     private int id;
     private int hotelId;
     private int excursionProgramId;
+    private String hotelName;
+    private String excursionProgramName;
     private String cityName;
 }

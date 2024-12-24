@@ -52,7 +52,7 @@ public class EmployeeRepository implements EmployeeRep {
     @Override
     public void update(Employee employee, int id) {
         String sql = "update employee set firstname = ? , lastname = ? , surname = ? where id = ?";
-        jdbcTemplate.update(sql, employee.getFirstName(), employee.getLastName(), employee.getSurName(), employee.getId());
+        jdbcTemplate.update(sql, employee.getFirstName(), employee.getLastName(), employee.getSurName(), id);
     }
 
     @Override

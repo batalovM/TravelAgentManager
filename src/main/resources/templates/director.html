@@ -89,17 +89,18 @@
         <form id="addForm" novalidate>
             <fieldset>
                 <legend>Данные клиента</legend>
-                <input type="text" id="addLastname" placeholder="Фамилия" required>
-                <input type="text" id="addFirstname" placeholder="Имя" required>
-                <input type="text" id="addSurname" placeholder="Отчество">
-                <input type="date" id="addDateOfBirth" required>
-                <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required pattern="\d{4}">
-                <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required pattern="\d{6}">
-                <input type="date" id="addDateOfIssue" required>
-                <input type="text" id="addIssueBy" placeholder="Кем выдан" required>
-                <input type="text" id="addPhoto" placeholder="Фото">
+                <input type="text" id="addLastname" placeholder="Фамилия" required value="Иванов">
+                <input type="text" id="addFirstname" placeholder="Имя" required value="Иван">
+                <input type="text" id="addSurname" placeholder="Отчество" value="Иванович">
+                <input type="date" id="addDateOfBirth" required value="1990-01-01">
+                <input type="text" id="addPassportSeries" placeholder="Серия паспорта" required pattern="\d{4}" value="1234">
+                <input type="text" id="addPassportNumber" placeholder="Номер паспорта" required pattern="\d{6}" value="567890">
+                <input type="date" id="addDateOfIssue" required value="2022-02-22">
+                <input type="text" id="addIssueBy" placeholder="Кем выдан" required value="ОВД города Москвы">
+                <input type="text" id="addPhoto" placeholder="Фото" value="photo.jpg">
                 <button type="submit">Добавить</button>
             </fieldset>
+
         </form>
     </div>
 
@@ -180,9 +181,9 @@
         <form id="addEmployeeForm" novalidate>
             <fieldset>
                 <legend>Данные сотрудника</legend>
-                <input type="text" id="addEmployeeLastName" placeholder="Фамилия" required>
-                <input type="text" id="addEmployeeFirstName" placeholder="Имя" required>
-                <input type="text" id="addEmployeeSurName" placeholder="Отчество">
+                <input type="text" id="addEmployeeLastName" placeholder="Фамилия" required value="Иванов">
+                <input type="text" id="addEmployeeFirstName" placeholder="Имя" required value="Иван">
+                <input type="text" id="addEmployeeSurName" placeholder="Отчество" value="Иванович">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -257,7 +258,7 @@
         <form id="addExcursionProgramForm" novalidate>
             <fieldset>
                 <legend>Данные экскурсионной программы</legend>
-                <input type="text" id="addExcursionProgramName" placeholder="Название экскурсионной программы" required>
+                <input type="text" id="addExcursionProgramName" placeholder="Название экскурсионной программы" required value="Название">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -336,14 +337,13 @@
         <form id="addTripForm" novalidate>
             <fieldset>
                 <legend>Данные поездки</legend>
-                <input type="number" id="addTripId" placeholder="ID поездки" required>
-                <input type="number" id="addTripCost" placeholder="Стоимость поездки" step="0.01" required>
-                <input type="number" id="addEmployeeId" placeholder="Имя сотрудника" required>
-                <input type="number" id="addRoutesId" placeholder="ID маршрута" required>
-                <input type="datetime-local" id="addDepartureTime" required>
-                <input type="time" id="addArrivalTime" required>
-                <input type="number" id="addTouristCount" placeholder="Количество туристов" required>
-                <input type="number" id="addPenaltySize" placeholder="Размер штрафа" step="0.01" required>
+                <input type="number" id="addTripCost" placeholder="Стоимость поездки" step="0.01" required value="55000">
+                <input type="number" id="addEmployeeId" placeholder="ID сотрудника" required value="1">
+                <input type="number" id="addRoutesId" placeholder="ID маршрута" required value="1">
+                <input type="date" id="addDepartureTime" required value="2022-02-22">
+                <input type="date" id="addArrivalTime" required value="2024-06-15">
+                <input type="number" id="addTouristCount" placeholder="Количество туристов" required value="15">
+                <input type="number" id="addPenaltySize" placeholder="Размер штрафа" step="0.01" required value="7000">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -363,12 +363,11 @@
             <form id="updateTripForm" novalidate>
                 <fieldset>
                     <legend>Данные поездки</legend>
-                    <input type="number" id="updateTripId" placeholder="ID поездки" required>
                     <input type="number" id="updateTripCost" placeholder="Стоимость поездки" step="0.01" required>
                     <input type="number" id="updateEmployeeId" placeholder="ID сотрудника" required>
                     <input type="number" id="updateRoutesId" placeholder="ID маршрута" required>
-                    <input type="datetime-local" id="updateDepartureTime" required>
-                    <input type="time" id="updateArrivalTime" required>
+                    <input type="date" id="updateDepartureTime" required>
+                    <input type="date" id="updateArrivalTime" required>
                     <input type="number" id="updateTouristCount" placeholder="Количество туристов" required>
                     <input type="number" id="updatePenaltySize" placeholder="Размер штрафа" step="0.01" required>
                     <button type="submit">Обновить</button>
@@ -425,10 +424,9 @@
         <form id="addRouteForm" novalidate>
             <fieldset>
                 <legend>Данные маршрута</legend>
-                <input type="number" id="addRouteId" placeholder="ID маршрута" required>
-                <input type="number" id="addCountryId" placeholder="ID страны" required>
-                <input type="text" id="addRouteName" placeholder="Название маршрута" required>
-                <input type="number" id="addDuration" placeholder="Продолжительность (дни)" required>
+                <input type="number" id="addCountryId" placeholder="ID страны" required value="1">
+                <input type="text" id="addRouteName" placeholder="Название маршрута" required value="Название">
+                <input type="number" id="addDuration" placeholder="Продолжительность (дни)" required value="10">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -448,7 +446,6 @@
             <form id="updateRouteForm" novalidate>
                 <fieldset>
                     <legend>Данные маршрута</legend>
-                    <input type="number" id="updateRouteId" placeholder="ID маршрута" required>
                     <input type="number" id="updateCountryId" placeholder="ID страны" required>
                     <input type="text" id="updateRouteName" placeholder="Название маршрута" required>
                     <input type="number" id="updateDuration" placeholder="Продолжительность (дни)" required>
@@ -506,9 +503,9 @@
         <form id="addCityForm" novalidate>
             <fieldset>
                 <legend>Данные города</legend>
-                <input type="number" id="addCityHotel" placeholder="ID отеля" required>
-                <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required>
-                <input type="text" id="addCityName" placeholder="Название города" required>
+                <input type="number" id="addCityHotel" placeholder="ID отеля" required value="1">
+                <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required value="1">
+                <input type="text" id="addCityName" placeholder="Название города" required value="Город">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -528,7 +525,6 @@
             <form id="updateCityForm" novalidate>
                 <fieldset>
                     <legend>Данные города</legend>
-                    <input type="number" id="updateCityId" placeholder="ID города" required>
                     <input type="number" id="updateCityHotelId" placeholder="ID отеля" required>
                     <input type="number" id="updateCityExcursionProgramId" placeholder="ID экскурсионной программы" required>
                     <input type="text" id="updateCityName" placeholder="Название города" required>
@@ -586,8 +582,8 @@
         <form id="addHotelForm" novalidate>
             <fieldset>
                 <legend>Данные отеля</legend>
-                <input type="text" id="addHotelName" placeholder="Название отеля" required>
-                <input type="number" id="addHotelClass" placeholder="Класс отеля" required>
+                <input type="text" id="addHotelName" placeholder="Название отеля" required value="Bronza">
+                <input type="number" id="addHotelClass" placeholder="Класс отеля" required value="4">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -607,7 +603,6 @@
             <form id="updateHotelForm" novalidate>
                 <fieldset>
                     <legend>Данные отеля</legend>
-                    <input type="number" id="updateHotelId" placeholder="ID отеля" required>
                     <input type="text" id="updateHotelName" placeholder="Название отеля" required>
                     <input type="number" id="updateHotelClass" placeholder="Класс отеля" required>
                     <button type="submit">Обновить</button>
@@ -669,16 +664,6 @@
     </header>
 
     <div class="settings">
-        <div class="language-settings">
-            <h3>Сменить язык интерфейса</h3>
-            <select id="languageSelect" aria-label="Выберите язык">
-                <option value="en">Английский</option>
-                <option value="ru">Русский</option>
-                <option value="fr">Французский</option>
-                <option value="de">Немецкий</option>
-            </select>
-        </div>
-
         <div class="theme-settings">
             <h3>Сменить тему</h3>
             <label class="toggle">
@@ -790,7 +775,7 @@
 
 
 <script src="./maiN.js"></script>
-<script src="./Client.js"></script>
+<script src="./client.js"></script>
 <script src="./employee.js"></script>
 <script src="./excursions.js"></script>
 <script src="./trips.js"></script>

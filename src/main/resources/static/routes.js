@@ -20,7 +20,7 @@ function displayRoutes(routes) {
         const row = document.createElement('tr');
         row.innerHTML = `
       <td>${route.id}</td>
-      <td>${route.countryId}</td>
+      <td>${route.countryName}</td>
       <td>${route.routeName}</td>
       <td>${route.duration}</td>
       
@@ -48,7 +48,7 @@ async function addRoute(event) {
         duration: document.getElementById('addDuration').value,
     };
     try {
-        await fetch('/api/routes/addRoute', {
+        await fetch('/api/routes/addRoutes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -81,6 +81,7 @@ async function updateRoute(route, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchRoute()
 }
 
 async function deleteRoute(id) {
@@ -95,7 +96,7 @@ addRouteForm.addEventListener('submit', addRoute);
 
 updateRouteForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const routeId = fetchClientId.value; // ID клиента
+    const routeId = fetchRouteId.value; // ID клиента
     const updatedRoute = {
         countryId: updateCountryId.value,
         routeName: updateRouteName.value,

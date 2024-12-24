@@ -19,12 +19,10 @@ import java.util.Optional;
 @RequestMapping("/api/employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService, EmployeeRepository employeeRepository) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.employeeRepository = employeeRepository;
     }
 
     @GetMapping
@@ -49,7 +47,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
-        employeeRepository.update(employee, id);
+        employeeService.updateEmployee(employee, id);
         return ResponseEntity.ok(employee);
     }
     @DeleteMapping("/{id}")

@@ -9,7 +9,7 @@ const updateCityModal = document.getElementById('updateCityModal');
 const deleteCityModal = document.getElementById('deleteCityModal');
 
 const updateCityHotelId = document.getElementById('updateCityHotelId');
-const updateExcursionProgramId = document.getElementById('updateExcursionProgramId');
+const updateExcursionProgramId = document.getElementById('updateCityExcursionProgramId');
 const updateCityName = document.getElementById('updateCityName');
 
 
@@ -19,8 +19,8 @@ function displayCity(city) {
         const row = document.createElement('tr');
         row.innerHTML = `
       <td>${city.id}</td>
-      <td>${city.hotelId}</td>
-      <td>${city.excursionProgramId}</td>
+      <td>${city.hotelName}</td>
+      <td>${city.excursionProgramName}</td>
       <td>${city.cityName}</td>
     `;
         cityTableBody.appendChild(row);
@@ -55,11 +55,10 @@ async function addCity(event) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newCity)
         })
-        // Обновляем таблицу клиентов
-        fetchCity();
     } catch (error) {
         console.error('Ошибка во время добавления:', error);
     }
+    await fetchCity()
 }
 
 async function updateCity(city, id) {
@@ -79,6 +78,7 @@ async function updateCity(city, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchCity()
 }
 
 async function deleteCity(id) {
@@ -87,6 +87,7 @@ async function deleteCity(id) {
     } catch (error) {
         console.error('Error deleting city:', error);
     }
+    await fetchCity()
 }
 
 addCityForm.addEventListener('submit', addCity);
@@ -94,6 +95,7 @@ addCityForm.addEventListener('submit', addCity);
 updateCityForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const cityId = fetchCityId.value; // ID клиента
+    console.log(cityId)
     const updatedCity = {
         hotelId: updateCityHotelId.value,
         excursionProgramId: updateExcursionProgramId.value,

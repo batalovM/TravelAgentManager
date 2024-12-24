@@ -31,6 +31,16 @@ public class RouteRepository implements RouteRep {
         route.setDuration(rs.getInt("duration"));
         return route;
     };
+
+    private static final RowMapper<Route> routeRowMapperUpt = ((rs, rowNum) -> {
+       Route route = new Route();
+       route.setId(rs.getInt("id"));
+       route.setCountryName(rs.getString("countryname"));
+       route.setRouteName(rs.getString("routename"));
+       route.setDuration(rs.getInt("duration"));
+       return route;
+    });
+
     @Override
     public Optional<Route> findById(int id) {
         String sql = "SELECT * FROM routes WHERE id = ?";
@@ -39,17 +49,24 @@ public class RouteRepository implements RouteRep {
 
     @Override
     public List<Route> findAll() {
-        String sql = "SELECT * FROM routes";
-        System.out.println(sql);
-        return jdbcTemplate.query(sql, routeRowMapper);
+        String sql = "SELECT\n" +
+                "    routes.id,\n" +
+                "    country.countryname AS countryname,\n" +
+                "    routes.routename,\n" +
+                "    routes.duration\n" +
+                "FROM\n" +
+                "    routes\n" +
+                "        LEFT JOIN\n" +
+                "    country ON routes.countryid = country.id;\n" +
+                "\n";
+        return jdbcTemplate.query(sql, routeRowMapperUpt);
     }
 
     @Override
     public void save(Route route) {
-        String sql = "INSERT INTO routes values (id=?, countryid=?, routename=?, duration)";
+        String sql = "INSERT INTO routes (countryid, routename, duration) VALUES (?, ?, ?)";
         jdbcTemplate.update(
                 sql,
-                route.getId(),
                 route.getCountryId(),
                 route.getRouteName(),
                 route.getDuration());

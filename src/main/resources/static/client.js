@@ -24,9 +24,29 @@ function displayClients(clients) {
     clients.forEach(client => {
         const row = document.createElement('tr');
 
-        // Если путь к фото существует, создаем <img> тег для отображения изображения
-        const photoCell = client.photo ? `<img src="./${client.photo}" width="200" height="200"/>` : 'Нет фото';
+        // Проверяем, существует ли путь к фото
+        let photoCell;
+        if (client.photo) {
+            // Проверяем, существует ли изображение
+            const img = new Image();
+            img.src = `./${client.photo}`;
+            img.onload = () => {
+                photoCell = `<img src="./${client.photo}" width="200" height="200"/>`;
+                row.innerHTML += photoCell; // Добавляем фото в строку
+                clientTableBody.appendChild(row); // Добавляем строку в таблицу только после загрузки изображения
+            };
+            img.onerror = () => {
+                photoCell = client.photo; // Если изображение не найдено, показываем название файла
+                row.innerHTML += `<td>${photoCell}</td>`; // Добавляем название файла в строку
+                clientTableBody.appendChild(row); // Добавляем строку в таблицу
+            };
+        } else {
+            photoCell = 'Нет фото'; // Если фото нет, показываем текст
+            row.innerHTML += `<td>${photoCell}</td>`; // Добавляем текст в строку
+            clientTableBody.appendChild(row); // Добавляем строку в таблицу
+        }
 
+        // Добавляем остальные данные клиента
         row.innerHTML = `
             <td>${client.id}</td>
             <td>${client.lastname}</td>
@@ -37,13 +57,13 @@ function displayClients(clients) {
             <td>${client.passportNumber}</td>
             <td>${client.dateOfIssue}</td>
             <td>${client.issueBy}</td>
-            <td>${photoCell}</td>  <!-- Здесь добавляется фото -->
-        `;
+        ` + row.innerHTML; // Объединяем строки с данными клиента и фото
 
-        clientTableBody.appendChild(row);  // Добавляем строку в таблицу
-        console.log(photoCell)
+        // Добавляем строку в таблицу
+        clientTableBody.appendChild(row);
     });
 }
+
 
 async function fetchClients() {
     try {
@@ -81,10 +101,11 @@ async function addClient(event) {
             body: JSON.stringify(newClient)
         })
         // Обновляем таблицу клиентов
-        fetchClients();
     } catch (error) {
         console.error('Ошибка во время добавления:', error);
+        alert("ошибка")
     }
+    await fetchClients();
 }
 
 async function updateClient(client, id) {
@@ -104,6 +125,7 @@ async function updateClient(client, id) {
     } catch (error) {
         alert(error.message);
     }
+    await fetchClients();
 }
 
 async function deleteClient(id) {

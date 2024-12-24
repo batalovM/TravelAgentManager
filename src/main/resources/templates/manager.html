@@ -347,10 +347,10 @@
         <form id="addRouteForm" novalidate>
             <fieldset>
                 <legend>Данные маршрута</legend>
-                <input type="number" id="addRouteId" placeholder="ID маршрута" required>
-                <input type="number" id="addCountryId" placeholder="ID страны" required>
-                <input type="text" id="addRouteName" placeholder="Название маршрута" required>
-                <input type="number" id="addDuration" placeholder="Продолжительность (дни)" required>
+                <legend>Данные маршрута</legend>
+                <input type="number" id="addCountryId" placeholder="ID страны" required value="1">
+                <input type="text" id="addRouteName" placeholder="Название маршрута" required value="Название">
+                <input type="number" id="addDuration" placeholder="Продолжительность (дни)" required value="10">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -428,9 +428,9 @@
         <form id="addCityForm" novalidate>
             <fieldset>
                 <legend>Данные города</legend>
-                <input type="number" id="addCityHotel" placeholder="ID отеля" required>
-                <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required>
-                <input type="text" id="addCityName" placeholder="Название города" required>
+                <input type="number" id="addCityHotel" placeholder="ID отеля" required value="1">
+                <input type="number" id="addExcursionProgramId" placeholder="ID экскурсионной программы" required value="1">
+                <input type="text" id="addCityName" placeholder="Название города" required value="Новосибирск">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -508,8 +508,8 @@
         <form id="addHotelForm" novalidate>
             <fieldset>
                 <legend>Данные отеля</legend>
-                <input type="text" id="addHotelName" placeholder="Название отеля" required>
-                <input type="number" id="addHotelClass" placeholder="Класс отеля" required>
+                <input type="text" id="addHotelName" placeholder="Название отеля" required value="Bronza">
+                <input type="number" id="addHotelClass" placeholder="Класс отеля" required value="4">
                 <button type="submit">Добавить</button>
             </fieldset>
         </form>
@@ -591,16 +591,6 @@
     </header>
 
     <div class="settings">
-        <div class="language-settings">
-            <h3>Сменить язык интерфейса</h3>
-            <select id="languageSelect" aria-label="Выберите язык">
-                <option value="en">Английский</option>
-                <option value="ru">Русский</option>
-                <option value="fr">Французский</option>
-                <option value="de">Немецкий</option>
-            </select>
-        </div>
-
         <div class="theme-settings">
             <h3>Сменить тему</h3>
             <label class="toggle">

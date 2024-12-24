@@ -1,5 +1,6 @@
 package org.example.travelagentmanager.controllers;
 
+import org.example.travelagentmanager.model.Client;
 import org.example.travelagentmanager.model.Hotel;
 import org.example.travelagentmanager.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,9 @@ public class HotelController {
         }
         return ResponseEntity.ok(hotel);
     }
+    // Добавить нового клиента
     @PostMapping("/addHotel")
-    public ResponseEntity<Hotel> addHotel(@RequestBody final Hotel hotel) {
+    public ResponseEntity<Hotel> addHotel(@RequestBody Hotel hotel) {
         hotelService.addHotel(hotel);
         return ResponseEntity.status(HttpStatus.CREATED).body(hotel);
     }
