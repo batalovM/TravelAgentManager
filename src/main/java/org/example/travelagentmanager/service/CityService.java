@@ -22,19 +22,15 @@ public class CityService {
     public Optional<City> getCityById(int id) {
         return cityRepository.findById(id);
     }
-
     public List<City> getAllCities() {
         return cityRepository.findAll();
     }
-
     public void addCity(City city) {
         cityRepository.save(city);
     }
-
     public void updateCity(City city, int id) {
         cityRepository.update(city, id);
     }
-
     public void deleteCity(int id) {
         cityRepository.deleteById(id);
     }

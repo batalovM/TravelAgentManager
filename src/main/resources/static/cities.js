@@ -34,7 +34,6 @@ async function fetchCity() {
         console.error('Error fetching cities:', error);
     }
 }
-
 // Функция для добавления клиента
 async function addCity(event) {
     event.preventDefault(); // Предотвращаем отправку формы по умолчанию

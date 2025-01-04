@@ -37,7 +37,7 @@ public class AuthController {
                 }
             }
         }
-        return "/login"; // неверные данные
+        return "/login";
     }
 
 }

@@ -14,15 +14,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-
     private final JdbcTemplate jdbcTemplate;
-
-
     @Autowired
     public AuthService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
     private static final RowMapper<User> userRowMapper = (rs, rowNum) -> {
         User user = new User();
         user.setId(rs.getInt("id"));
@@ -31,7 +27,6 @@ public class AuthService {
         user.setPassword(rs.getString("password"));
         return user;
     };
-
     public User authenticate(String username, String password) {
         String sql = "select * from users where username = ?";
         try {

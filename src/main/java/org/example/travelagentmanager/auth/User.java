@@ -22,7 +22,6 @@ public class User {
     
     public User(String username, String password) {
     }
-
     public User(String admin, String password, String roleAdmin) {
     }
 }
