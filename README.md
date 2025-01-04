@@ -119,3 +119,5 @@
 ---
 
 ## Скриншоты
+![Скриншот 1](src/main/resources/static/Рисунок1.png)
+![Скриншот 2](src/main/resources/static/Рисунок2.png)
